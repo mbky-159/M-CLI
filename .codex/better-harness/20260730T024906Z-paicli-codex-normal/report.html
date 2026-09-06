@@ -1,0 +1,424 @@
+<!doctype html>
+<html lang="zh-CN" class="no-js">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="generator" content="better-harness codex-html">
+  <title>Harness 洞察 · paicli</title>
+  <style>
+    :root { color-scheme: dark; --bg:#111315; --panel:#1a1d20; --panel-2:#21252a; --line:#31363d; --text:#f5f7fa; --muted:#9aa3ad; --blue:#6cb8ff; --blue-2:#1b6ca8; --orange:#ff9a5a; --green:#53d69b; --red:#ff6b6b; }
+    * { box-sizing:border-box; }
+    html { background:var(--bg); scroll-behavior:smooth; }
+    body { margin:0; min-width:320px; font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; color:var(--text); background:radial-gradient(circle at 12% -10%,#22364a 0,transparent 34rem),var(--bg); line-height:1.55; }
+    .sr-only { position:absolute!important; width:1px!important; height:1px!important; padding:0!important; margin:-1px!important; overflow:hidden!important; clip:rect(0,0,0,0)!important; white-space:nowrap!important; border:0!important; }
+    body::before { content:""; position:fixed; inset:0; pointer-events:none; opacity:.22; background-image:linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px); background-size:28px 28px; }
+    main { position:relative; width:min(1180px,calc(100% - 40px)); margin:0 auto; padding:52px 0 88px; }
+    h1,h2,h3,p { margin-top:0; }
+    .eyebrow,.label { color:var(--blue); font-size:12px; font-weight:700; letter-spacing:.11em; text-transform:uppercase; }
+    .hero { display:grid; grid-template-columns:minmax(0,1fr) 190px; gap:36px; align-items:end; min-height:270px; padding:42px; border:1px solid var(--line); border-radius:28px; background:linear-gradient(135deg,rgba(36,43,51,.96),rgba(21,24,27,.94)); box-shadow:0 28px 70px rgba(0,0,0,.28); }
+    .hero h1 { margin:12px 0 10px; font-size:clamp(42px,7vw,82px); line-height:.96; letter-spacing:-.055em; }
+    .hero p { max-width:760px; margin-bottom:22px; color:#c9d0d8; font-size:18px; }
+    .hero-tags { display:flex; flex-wrap:wrap; gap:8px; }
+    .score-orbit { width:174px; aspect-ratio:1; display:grid; place-content:center; text-align:center; border:14px solid #343a41; border-top-color:var(--blue); border-right-color:var(--blue-2); border-radius:50%; background:#1a2026; box-shadow:inset 0 0 0 1px var(--line); }
+    .score-orbit strong { font-size:44px; line-height:1; }
+    .score-orbit span { width:110px; margin-top:7px; color:var(--muted); font-size:12px; }
+    .pill { display:inline-flex; align-items:center; min-height:26px; padding:3px 10px; border-radius:999px; color:#d4dae0; background:#30353b; font-size:12px; font-weight:700; }
+    .pill.accent { color:#c9e8ff; background:#164e75; }.pill.good { color:#c9f9e5; background:#165c43; }.pill.warning { color:#ffe1c8; background:#754322; }.pill.danger { color:#ffd4d4; background:#762e31; }.pill.muted,.pill.neutral { color:#c8cdd3; background:#34383d; }
+    .metrics { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin:18px 0 54px; }
+    .metric { min-height:126px; padding:22px 24px; border:1px solid var(--line); border-radius:20px; background:rgba(30,34,38,.9); }
+    .metric span,.metric small { display:block; color:var(--muted); }.metric strong { display:block; margin:5px 0 2px; font-size:34px; line-height:1.1; }.metric small { font-size:12px; }
+    .section { margin-top:64px; scroll-margin-top:24px; }.section-heading { display:flex; justify-content:space-between; gap:30px; align-items:end; margin-bottom:20px; }.section-heading h2 { margin:5px 0 0; font-size:30px; letter-spacing:-.025em; }.section-heading > p { max-width:420px; margin:0; color:var(--muted); text-align:right; font-size:14px; }
+    .dimension-grid { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:12px; }.dimension-card { min-height:230px; padding:19px; border:1px solid var(--line); border-radius:19px; background:linear-gradient(180deg,var(--panel-2),var(--panel)); }.dimension-top { display:flex; min-height:52px; justify-content:space-between; gap:8px; align-items:flex-start; font-weight:700; }.score-line { display:flex; align-items:baseline; gap:4px; margin-top:14px; }.score-line strong { font-size:34px; }.score-line span { color:var(--muted); font-size:12px; }.track { height:8px; margin:8px 0 16px; overflow:hidden; border-radius:999px; background:#30353a; }.track i { display:block; height:100%; border-radius:inherit; background:linear-gradient(90deg,var(--blue-2),var(--blue)); }.dimension-card p { margin:0; color:var(--muted); font-size:13px; }
+    .activity-layout { display:grid; grid-template-columns:minmax(0,1.8fr) minmax(230px,.7fr); gap:14px; }.activity-panel,.subpanel,.finding,.custom-grid article,.evidence-grid,.evidence-note { border:1px solid var(--line); border-radius:19px; background:var(--panel); }.activity-panel { padding:22px; overflow:hidden; }.heatmap { display:grid; grid-template-rows:repeat(7,13px); grid-auto-flow:column; grid-auto-columns:13px; gap:4px; min-height:115px; overflow-x:auto; padding-bottom:8px; }.heat-cell { border-radius:3px; background:#2b3035; }.heat-cell.l1{background:#174d70}.heat-cell.l2{background:#206f9e}.heat-cell.l3{background:#319bd1}.heat-cell.l4{background:#70c9ff}.heat-legend { display:flex; justify-content:space-between; color:var(--muted); font-size:11px; }.stacked-metrics { display:grid; gap:14px; }.stacked-metrics .metric { min-height:0; }
+    .two-column { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:14px; }.subpanel { padding:22px; }.subpanel h3 { font-size:15px; }.usage-list { display:grid; gap:12px; }.usage-row { display:grid; grid-template-columns:minmax(100px,.75fr) 1fr 52px; gap:12px; align-items:center; font-size:12px; }.usage-row > span { white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }.usage-row i { height:7px; overflow:hidden; border-radius:999px; background:#30353a; }.usage-row b { display:block; height:100%; background:linear-gradient(90deg,var(--blue-2),var(--blue)); }.usage-row strong { text-align:right; }
+    .finding-list { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; }.finding-card { min-width:0; min-height:220px; display:flex; flex-direction:column; padding:18px; border:1px solid var(--line); border-radius:19px; background:linear-gradient(180deg,#1c2329,var(--panel)); }.finding-card-main { display:grid; gap:10px; }.finding-meta { display:flex; flex-wrap:wrap; gap:7px; }.finding-card h3 { min-height:2.8em; margin:0; display:-webkit-box; overflow:hidden; font-size:17px; line-height:1.4; -webkit-box-orient:vertical; -webkit-line-clamp:2; }.finding-preview { margin:0; color:#c7ced6; display:-webkit-box; overflow:hidden; font-size:13px; line-height:1.55; -webkit-box-orient:vertical; -webkit-line-clamp:2; }.finding-actions,.dialog-actions { display:flex; flex-wrap:wrap; justify-content:space-between; gap:10px; margin-top:auto; padding-top:16px; }.action-button { min-height:38px; padding:8px 13px; border:1px solid transparent; border-radius:10px; color:var(--text); background:#30363d; font:inherit; font-size:13px; font-weight:700; cursor:pointer; }.action-button:hover { filter:brightness(1.12); }.action-button:focus-visible { outline:2px solid var(--blue); outline-offset:2px; }.action-button.secondary { color:#cceaff; border-color:#286d9b; background:#164e75; }.action-button.ghost { color:#d4dae0; border-color:var(--line); background:transparent; }.finding-dialog,.manual-copy-dialog { width:min(880px,calc(100vw - 32px)); max-height:calc(100vh - 32px); overflow:auto; padding:24px; border:1px solid var(--line); border-radius:20px; color:var(--text); background:var(--panel); box-shadow:0 30px 90px rgba(0,0,0,.55); }.finding-dialog::backdrop,.manual-copy-dialog::backdrop { background:rgba(4,8,12,.72); }.dialog-heading { display:flex; justify-content:space-between; gap:18px; align-items:flex-start; }.dialog-heading h3 { margin:6px 0 0; font-size:24px; }.dialog-section { margin-top:18px; }.dialog-section p { margin:7px 0 0; color:#d1d7de; }.dialog-section ol,.dialog-section ul { margin:8px 0 0; padding-left:22px; color:#d1d7de; }.manual-copy-dialog textarea { width:100%; min-height:260px; margin-top:14px; padding:14px; resize:vertical; border:1px solid var(--line); border-radius:12px; color:var(--text); background:#11161b; font:13px/1.5 ui-monospace,SFMono-Regular,Consolas,monospace; }.no-js .finding-actions,.no-js .manual-copy-dialog { display:none!important; }.no-js .finding-dialog:not([open]) { display:block; position:static; width:auto; max-height:none; margin-top:16px; box-shadow:none; }
+    .suggestion-block { margin-top:28px; padding-top:24px; border-top:1px solid var(--line); }.suggestion-heading { display:flex; justify-content:space-between; gap:20px; align-items:end; margin-bottom:14px; }.suggestion-heading h3 { margin:4px 0 0; font-size:20px; }.suggestion-heading p { margin:0; color:var(--muted); font-size:12px; }.suggestion-list { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:12px; }.suggestion { padding:18px; border:1px solid var(--line); border-radius:17px; background:linear-gradient(180deg,#1b252d,var(--panel)); }.suggestion-top { display:flex; justify-content:space-between; gap:8px; }.suggestion h3 { margin:13px 0 7px; font-size:16px; }.suggestion > p { color:#c7ced6; font-size:13px; }.suggestion dl { display:grid; gap:9px; margin:14px 0 0; }.suggestion dl div { display:grid; gap:2px; }.suggestion dt { color:var(--muted); font-size:11px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; }.suggestion dd { margin:0; color:#d7dde4; font-size:12px; }
+    .custom-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(190px,1fr)); gap:12px; }.custom-grid article { display:flex; gap:14px; align-items:center; padding:18px; }.custom-grid h3 { margin:0; font-size:15px; }.custom-grid p { margin:3px 0 0; color:var(--muted); font-size:12px; }.custom-mark { display:grid; flex:0 0 38px; aspect-ratio:1; place-content:center; border-radius:12px; color:#d9efff; background:#164e75; font-weight:800; }
+    .evidence-grid { display:grid; grid-template-columns:repeat(3,1fr); overflow:hidden; }.evidence-grid div { padding:20px; border-right:1px solid var(--line); border-bottom:1px solid var(--line); }.evidence-grid span,.evidence-grid strong { display:block; }.evidence-grid span { color:var(--muted); font-size:12px; }.evidence-grid strong { margin-top:4px; }.evidence-note { margin-top:14px; padding:20px; }.method-note,.empty { color:var(--muted); }.method-note { max-width:800px; margin:18px 0 0; font-size:13px; }
+    footer { margin-top:64px; padding-top:20px; border-top:1px solid var(--line); color:var(--muted); font-size:12px; }
+    @media (max-width:1000px) { .finding-list{grid-template-columns:repeat(2,minmax(0,1fr))} }
+    @media (max-width:900px) { .metrics,.dimension-grid{grid-template-columns:repeat(2,1fr)}.activity-layout,.two-column{grid-template-columns:1fr}.evidence-grid{grid-template-columns:repeat(2,1fr)} }
+    @media (max-width:680px) { .finding-list{grid-template-columns:1fr}.finding-card{min-height:0} }
+    @media (max-width:620px) { main{width:min(100% - 24px,1180px);padding-top:18px}.hero{grid-template-columns:1fr;min-height:0;padding:25px;border-radius:22px}.hero h1{font-size:44px}.hero p{font-size:15px}.score-orbit{width:126px}.score-orbit strong{font-size:34px}.metrics{grid-template-columns:1fr;margin-bottom:42px}.metric{min-height:0}.section{margin-top:46px}.section-heading,.suggestion-heading{display:block}.section-heading > p,.suggestion-heading > p{text-align:left;margin-top:8px}.dimension-grid{grid-template-columns:1fr}.dimension-card{min-height:0}.evidence-grid{grid-template-columns:1fr}.usage-row{grid-template-columns:minmax(92px,.7fr) 1fr 44px}.finding-dialog{padding:18px}.dialog-heading{display:grid} }
+    @media print { :root{color-scheme:light;--bg:#fff;--panel:#fff;--panel-2:#f6f8fa;--line:#d8dee4;--text:#111;--muted:#59636e}body{background:#fff}body::before{display:none}.hero{box-shadow:none}.section{break-inside:avoid}.finding-list{display:block}.finding-card{margin-bottom:16px;break-inside:avoid}.finding-actions,.dialog-actions,.manual-copy-dialog{display:none!important}.finding-dialog:not([open]){display:block!important;position:static;width:auto;max-height:none;margin-top:16px;box-shadow:none} }
+  </style>
+</head>
+<body>
+<div id="copy-status" class="sr-only" role="status" aria-live="polite"></div>
+<main id="harness-report" data-report-mode="codex-html">
+<header class="hero" data-section="overview">
+    <div class="hero-copy">
+      <span class="eyebrow">Harness 洞察 · Codex HTML</span>
+      <h1>PaiCLI</h1>
+      <p>PaiCLI 已有清晰的项目记忆、分层测试和安全控制机制，但当前 Codex 工作流主要停在“规则与测试存在”：跨层安全边界缺少不可绕过的端到端证明，当前跨模块改动没有一条可发现的 affected-check 路由，近 30 天的变更任务也缺少与最终状态绑定的验证和验收记录。建议沿 Operationalize 轨道把现有机制接入日常任务闭环。</p>
+      <div class="hero-tags"><span class="pill accent">agent-work-loop-v4</span><span class="pill muted">证据有界</span></div>
+    </div>
+    <div class="score-orbit"><strong>5</strong><span>独立复核维度</span></div>
+  </header>
+  <div class="metrics">
+    <div class="metric">
+    <span>循环有效性</span>
+    <strong>54 / 100</strong>
+    <small>等待后续任务结果后更新</small>
+  </div>
+    <div class="metric">
+    <span>资产健康 / 修复进度</span>
+    <strong>0 / 100</strong>
+    <small>0 项已验证 · 0 项部分完成 · 5 项待处理</small>
+  </div>
+    <div class="metric">
+    <span>会话样本</span>
+    <strong>0 / 0</strong>
+    
+  </div>
+    <div class="metric">
+    <span>待处理 Finding</span>
+    <strong>5</strong>
+    <small>0 High · 4 Medium</small>
+  </div>
+  </div>
+  <section class="section" data-section="fluency" aria-labelledby="section-fluency">
+    <div class="section-heading">
+      <div><span class="eyebrow">01 · 就绪度</span><h2 id="section-fluency">五维流畅度</h2></div>
+      <p>分数与状态来自已复核 source。</p>
+    </div>
+    <div class="dimension-grid">
+    <article class="dimension-card" data-dimension-id="task-understanding">
+        <div class="dimension-top"><span>任务理解</span><span class="pill muted">已复核</span></div>
+        <div class="score-line"><strong>68</strong><span>/ 100</span></div>
+        <div class="track" aria-label="任务理解 68 of 100"><i style="width:68%"></i></div>
+        <p>AGENTS.md、PAI.md 与 README.md 的权威顺序和核心命令基本一致，但根级 Agent 指南过载，关键安全与验证规则被大量实现细节稀释。</p>
+      </article>
+<article class="dimension-card" data-dimension-id="controlled-execution">
+        <div class="dimension-top"><span>可控执行</span><span class="pill muted">已复核</span></div>
+        <div class="score-line"><strong>72</strong><span>/ 100</span></div>
+        <div class="track" aria-label="可控执行 72 of 100"><i style="width:72%"></i></div>
+        <p>HITL、PathGuard 与 CommandGuard 已在代码和分层单测中出现，但“批准仍不能越过策略拒绝”的组合边界尚未由一条聚焦验证证明。</p>
+      </article>
+<article class="dimension-card" data-dimension-id="change-validation">
+        <div class="dimension-top"><span>改动验证</span><span class="pill muted">已复核</span></div>
+        <div class="score-line"><strong>54</strong><span>/ 100</span></div>
+        <div class="track" aria-label="改动验证 54 of 100"><i style="width:54%"></i></div>
+        <p>仓库拥有大量测试和 quick/full 路径，当前变更也配套增加了测试代码，但没有可发现的命令把 ledger、重试和记忆去重的最终变更映射到同一组相关检查。</p>
+      </article>
+<article class="dimension-card" data-dimension-id="reliable-delivery">
+        <div class="dimension-top"><span>可靠交付</span><span class="pill muted">已复核</span></div>
+        <div class="score-line"><strong>42</strong><span>/ 100</span></div>
+        <div class="track" aria-label="可靠交付 42 of 100"><i style="width:42%"></i></div>
+        <p>会话中可以观察到交接，但没有与最终变更绑定的结构化完成信号、相关验证结果或真实验收边界。</p>
+      </article>
+<article class="dimension-card" data-dimension-id="learning-capture">
+        <div class="dimension-top"><span>经验沉淀</span><span class="pill muted">已复核</span></div>
+        <div class="score-line"><strong>35</strong><span>/ 100</span></div>
+        <div class="track" aria-label="经验沉淀 35 of 100"><i style="width:35%"></i></div>
+        <p>出现了明确的持久偏好需求，但本次范围不读取 Memory 正文，也没有后续独立任务证明检索、应用和结果改善，学习效果保持未观测。</p>
+      </article>
+  </div>
+  </section>
+  
+  <section class="section" data-section="findings" aria-labelledby="section-findings">
+    <div class="section-heading">
+      <div><span class="eyebrow">03 · 行动</span><h2 id="section-findings">Finding 与建议</h2></div>
+      <p>5 条 finding · 0 条建议</p>
+    </div>
+    <div class="finding-list"><article class="finding-card" data-finding-id="policy-approval-nonbypass-unverified">
+      <div class="finding-card-main">
+        <div class="finding-meta">
+          <span class="pill warning">Medium</span>
+          <span class="pill neutral">可控执行</span>
+        </div>
+        <h3>人工批准后仍不可越过策略拒绝的边界缺少组合验证</h3>
+        <p class="finding-preview">AGENTS.md 明确要求用户不能批准被策略层拒绝的请求，代码路径也会在 HITL 批准后继续进入 ToolRegistry；现有测试分别覆盖 HITL 决策、PathGuard 越界和 CommandGuard 危险命令，但没有一条测试把“批准危险调用 → PathGuard/CommandGuard 再拒绝 → 无副作用并写入 policy deny 审计”串起来。该缺口使安全层次顺序在重构后可能退化而不被聚焦回归发现。</p>
+      </div>
+      <div class="finding-actions">
+        <button type="button" class="action-button secondary" data-copy-finding="policy-approval-nonbypass-unverified" aria-label="复制 AI 修复: 人工批准后仍不可越过策略拒绝的边界缺少组合验证">复制 AI 修复</button>
+        <button type="button" class="action-button ghost" data-view-finding-dialog="finding-dialog-1" aria-label="查看详情: 人工批准后仍不可越过策略拒绝的边界缺少组合验证">查看详情</button>
+      </div>
+      <dialog class="finding-dialog" id="finding-dialog-1" data-finding-dialog-id="policy-approval-nonbypass-unverified" aria-labelledby="finding-dialog-1-title">
+        <div class="dialog-heading">
+          <div><span class="label">Finding 详情</span><h3 id="finding-dialog-1-title">人工批准后仍不可越过策略拒绝的边界缺少组合验证</h3></div>
+          <span class="pill warning">Medium</span>
+        </div>
+        <div class="dialog-section"><span class="label">原因</span><p>AGENTS.md 明确要求用户不能批准被策略层拒绝的请求，代码路径也会在 HITL 批准后继续进入 ToolRegistry；现有测试分别覆盖 HITL 决策、PathGuard 越界和 CommandGuard 危险命令，但没有一条测试把“批准危险调用 → PathGuard/CommandGuard 再拒绝 → 无副作用并写入 policy deny 审计”串起来。该缺口使安全层次顺序在重构后可能退化而不被聚焦回归发现。</p></div>
+        <div class="dialog-section"><span class="label">预期结果</span><ol><li>用一条可重复的聚焦回归证明 HITL 批准不能绕过路径或命令策略，并保留可审计的拒绝结果。</li></ol></div>
+        <div class="dialog-section"><span class="label">验收检查</span><ul><li>运行 mvn test -Dtest=HitlToolRegistryTest,PathGuardTest,CommandGuardTest,AuditLogTest -DskipTests=false</li><li>确认批准路径、策略拒绝、无副作用和审计归因同时通过</li></ul></div>
+        <div class="dialog-actions">
+          <button type="button" class="action-button secondary" data-copy-finding="policy-approval-nonbypass-unverified" aria-label="复制 AI 修复: 人工批准后仍不可越过策略拒绝的边界缺少组合验证">复制 AI 修复</button>
+          <button type="button" class="action-button ghost" data-close-finding-dialog="finding-dialog-1">关闭</button>
+        </div>
+      </dialog>
+    </article>
+<article class="finding-card" data-finding-id="cross-cutting-change-no-affected-check-route">
+      <div class="finding-card-main">
+        <div class="finding-meta">
+          <span class="pill warning">Medium</span>
+          <span class="pill neutral">改动验证</span>
+        </div>
+        <h3>当前跨模块变更没有一条可发现的 affected-check 命令</h3>
+        <p class="finding-preview">当前变更同时影响 ReAct、Plan、Team、ConversationLedger、OpenAI-compatible 重试和长期记忆去重；仓库已新增或修改相应测试，但 AGENTS.md 的验证矩阵只提供通用领域入口，mvn clean package 又默认跳过测试。Agent 因此无法从任务入口直接得知哪一组最小检查覆盖最终变更，容易只运行 quick 或单个邻近测试而遗漏跨路径不变量。</p>
+      </div>
+      <div class="finding-actions">
+        <button type="button" class="action-button secondary" data-copy-finding="cross-cutting-change-no-affected-check-route" aria-label="复制 AI 修复: 当前跨模块变更没有一条可发现的 affected-check 命令">复制 AI 修复</button>
+        <button type="button" class="action-button ghost" data-view-finding-dialog="finding-dialog-2" aria-label="查看详情: 当前跨模块变更没有一条可发现的 affected-check 命令">查看详情</button>
+      </div>
+      <dialog class="finding-dialog" id="finding-dialog-2" data-finding-dialog-id="cross-cutting-change-no-affected-check-route" aria-labelledby="finding-dialog-2-title">
+        <div class="dialog-heading">
+          <div><span class="label">Finding 详情</span><h3 id="finding-dialog-2-title">当前跨模块变更没有一条可发现的 affected-check 命令</h3></div>
+          <span class="pill warning">Medium</span>
+        </div>
+        <div class="dialog-section"><span class="label">原因</span><p>当前变更同时影响 ReAct、Plan、Team、ConversationLedger、OpenAI-compatible 重试和长期记忆去重；仓库已新增或修改相应测试，但 AGENTS.md 的验证矩阵只提供通用领域入口，mvn clean package 又默认跳过测试。Agent 因此无法从任务入口直接得知哪一组最小检查覆盖最终变更，容易只运行 quick 或单个邻近测试而遗漏跨路径不变量。</p></div>
+        <div class="dialog-section"><span class="label">预期结果</span><ol><li>让 Agent 能从跨模块改动直接路由到一条覆盖最终状态的最小 Maven 检查集合。</li></ol></div>
+        <div class="dialog-section"><span class="label">验收检查</span><ul><li>运行 mvn test -Dtest=ConversationLedgerTest,AgentConversationLedgerTest,AgentOrchestratorTest,MainPlanAgentFactoryTest,LlmRetryPolicyTest,AbstractOpenAiCompatibleClientRetryTest,LongTermMemoryTest -DskipTests=false</li><li>确认命令可从 Agent 指南按变更类型直接发现，并记录最终结果</li></ul></div>
+        <div class="dialog-actions">
+          <button type="button" class="action-button secondary" data-copy-finding="cross-cutting-change-no-affected-check-route" aria-label="复制 AI 修复: 当前跨模块变更没有一条可发现的 affected-check 命令">复制 AI 修复</button>
+          <button type="button" class="action-button ghost" data-close-finding-dialog="finding-dialog-2">关闭</button>
+        </div>
+      </dialog>
+    </article>
+<article class="finding-card" data-finding-id="changed-task-handoff-without-acceptance-evidence">
+      <div class="finding-card-main">
+        <div class="finding-meta">
+          <span class="pill warning">Medium</span>
+          <span class="pill neutral">可靠交付</span>
+        </div>
+        <h3>变更任务的交接没有与最终状态绑定的验收证据</h3>
+        <p class="finding-preview">近 30 天的 Codex 会话中，多次有变更的任务以助手 handoff 结束；唯一可见检查是通过的 git diff --check，但其与最终内容或行为的相关性未闭合，也没有结构化完成信号或用户验收。该证据不代表任务失败，却说明当前工作流无法区分“宣布完成”与“结果已被相关检查或用户接受”。</p>
+      </div>
+      <div class="finding-actions">
+        <button type="button" class="action-button secondary" data-copy-finding="changed-task-handoff-without-acceptance-evidence" aria-label="复制 AI 修复: 变更任务的交接没有与最终状态绑定的验收证据">复制 AI 修复</button>
+        <button type="button" class="action-button ghost" data-view-finding-dialog="finding-dialog-3" aria-label="查看详情: 变更任务的交接没有与最终状态绑定的验收证据">查看详情</button>
+      </div>
+      <dialog class="finding-dialog" id="finding-dialog-3" data-finding-dialog-id="changed-task-handoff-without-acceptance-evidence" aria-labelledby="finding-dialog-3-title">
+        <div class="dialog-heading">
+          <div><span class="label">Finding 详情</span><h3 id="finding-dialog-3-title">变更任务的交接没有与最终状态绑定的验收证据</h3></div>
+          <span class="pill warning">Medium</span>
+        </div>
+        <div class="dialog-section"><span class="label">原因</span><p>近 30 天的 Codex 会话中，多次有变更的任务以助手 handoff 结束；唯一可见检查是通过的 git diff --check，但其与最终内容或行为的相关性未闭合，也没有结构化完成信号或用户验收。该证据不代表任务失败，却说明当前工作流无法区分“宣布完成”与“结果已被相关检查或用户接受”。</p></div>
+        <div class="dialog-section"><span class="label">预期结果</span><ol><li>让后续任务的交付记录可区分助手声明、相关验证和真实验收。</li></ol></div>
+        <div class="dialog-section"><span class="label">验收检查</span><ul><li>用一个后续 PaiCLI 变更任务演练该约定</li><li>确认最终 handoff 能绑定最终变更、相关检查结果和验收状态，而不只引用 git diff --check</li></ul></div>
+        <div class="dialog-actions">
+          <button type="button" class="action-button secondary" data-copy-finding="changed-task-handoff-without-acceptance-evidence" aria-label="复制 AI 修复: 变更任务的交接没有与最终状态绑定的验收证据">复制 AI 修复</button>
+          <button type="button" class="action-button ghost" data-close-finding-dialog="finding-dialog-3">关闭</button>
+        </div>
+      </dialog>
+    </article>
+<article class="finding-card" data-finding-id="root-agent-guide-context-overload">
+      <div class="finding-card-main">
+        <div class="finding-meta">
+          <span class="pill warning">Medium</span>
+          <span class="pill neutral">任务理解</span>
+        </div>
+        <h3>根级 AGENTS.md 过载，关键操作规则被实现细节稀释</h3>
+        <p class="finding-preview">当前唯一项目级 Codex Rule 是 240 行的根 AGENTS.md，且仓库没有嵌套 AGENTS.md。文件同时承载架构清单、provider 协议细节、长篇 TUI 行为和模块级规则；真正影响所有任务的安全边界、同步规则和验证矩阵直到中后段才出现。PAI.md 只有 31 行且与核心命令基本一致，因此问题不是缺少导航，而是根指南没有充分利用已存在的 docs/agents-reference.md 做渐进披露。</p>
+      </div>
+      <div class="finding-actions">
+        <button type="button" class="action-button secondary" data-copy-finding="root-agent-guide-context-overload" aria-label="复制 AI 修复: 根级 AGENTS.md 过载，关键操作规则被实现细节稀释">复制 AI 修复</button>
+        <button type="button" class="action-button ghost" data-view-finding-dialog="finding-dialog-4" aria-label="查看详情: 根级 AGENTS.md 过载，关键操作规则被实现细节稀释">查看详情</button>
+      </div>
+      <dialog class="finding-dialog" id="finding-dialog-4" data-finding-dialog-id="root-agent-guide-context-overload" aria-labelledby="finding-dialog-4-title">
+        <div class="dialog-heading">
+          <div><span class="label">Finding 详情</span><h3 id="finding-dialog-4-title">根级 AGENTS.md 过载，关键操作规则被实现细节稀释</h3></div>
+          <span class="pill warning">Medium</span>
+        </div>
+        <div class="dialog-section"><span class="label">原因</span><p>当前唯一项目级 Codex Rule 是 240 行的根 AGENTS.md，且仓库没有嵌套 AGENTS.md。文件同时承载架构清单、provider 协议细节、长篇 TUI 行为和模块级规则；真正影响所有任务的安全边界、同步规则和验证矩阵直到中后段才出现。PAI.md 只有 31 行且与核心命令基本一致，因此问题不是缺少导航，而是根指南没有充分利用已存在的 docs/agents-reference.md 做渐进披露。</p></div>
+        <div class="dialog-section"><span class="label">预期结果</span><ol><li>让 Agent 先获得短而高信号的全局规则，再按任务加载实现细节，降低上下文腐化风险。</li></ol></div>
+        <div class="dialog-section"><span class="label">验收检查</span><ul><li>确认根 AGENTS.md 明显低于 200 行且所有关键安全与验证入口仍可一跳发现</li><li>对照 PAI.md 和 README.md 检查命令、权威顺序与未交付边界没有冲突</li></ul></div>
+        <div class="dialog-actions">
+          <button type="button" class="action-button secondary" data-copy-finding="root-agent-guide-context-overload" aria-label="复制 AI 修复: 根级 AGENTS.md 过载，关键操作规则被实现细节稀释">复制 AI 修复</button>
+          <button type="button" class="action-button ghost" data-close-finding-dialog="finding-dialog-4">关闭</button>
+        </div>
+      </dialog>
+    </article>
+<article class="finding-card" data-finding-id="persistent-preference-no-later-verification">
+      <div class="finding-card-main">
+        <div class="finding-meta">
+          <span class="pill neutral">Low</span>
+          <span class="pill neutral">经验沉淀</span>
+        </div>
+        <h3>持久偏好需求没有后续独立任务验证其应用效果</h3>
+        <p class="finding-preview">会话事实中出现过明确的全局偏好保存请求，并观察到变更与 handoff；本次审查按授权不读取 Memory 正文，也没有后续独立任务证明该偏好被检索、与任务相关、实际应用且减少重复纠正。因此不能断言保存失败，但当前闭环缺少一个不暴露 Memory 内容的跨会话效果验证。</p>
+      </div>
+      <div class="finding-actions">
+        <button type="button" class="action-button secondary" data-copy-finding="persistent-preference-no-later-verification" aria-label="复制 AI 修复: 持久偏好需求没有后续独立任务验证其应用效果">复制 AI 修复</button>
+        <button type="button" class="action-button ghost" data-view-finding-dialog="finding-dialog-5" aria-label="查看详情: 持久偏好需求没有后续独立任务验证其应用效果">查看详情</button>
+      </div>
+      <dialog class="finding-dialog" id="finding-dialog-5" data-finding-dialog-id="persistent-preference-no-later-verification" aria-labelledby="finding-dialog-5-title">
+        <div class="dialog-heading">
+          <div><span class="label">Finding 详情</span><h3 id="finding-dialog-5-title">持久偏好需求没有后续独立任务验证其应用效果</h3></div>
+          <span class="pill neutral">Low</span>
+        </div>
+        <div class="dialog-section"><span class="label">原因</span><p>会话事实中出现过明确的全局偏好保存请求，并观察到变更与 handoff；本次审查按授权不读取 Memory 正文，也没有后续独立任务证明该偏好被检索、与任务相关、实际应用且减少重复纠正。因此不能断言保存失败，但当前闭环缺少一个不暴露 Memory 内容的跨会话效果验证。</p></div>
+        <div class="dialog-section"><span class="label">预期结果</span><ol><li>建立不暴露 Memory 正文的跨会话验证链，区分已保存、已应用和 later outcome improved。</li></ol></div>
+        <div class="dialog-section"><span class="label">验收检查</span><ul><li>在后续独立会话中执行一次无敏感内容的偏好应用检查</li><li>仅记录检索、相关、应用和结果状态，并保留后续可比较窗口</li></ul></div>
+        <div class="dialog-actions">
+          <button type="button" class="action-button secondary" data-copy-finding="persistent-preference-no-later-verification" aria-label="复制 AI 修复: 持久偏好需求没有后续独立任务验证其应用效果">复制 AI 修复</button>
+          <button type="button" class="action-button ghost" data-close-finding-dialog="finding-dialog-5">关闭</button>
+        </div>
+      </dialog>
+    </article></div>
+  </section>
+  <section class="section" data-section="customize" aria-labelledby="section-customize">
+    <div class="section-heading">
+      <div><span class="eyebrow">04 · 能力</span><h2 id="section-customize">Agent 自定义</h2></div>
+      <p>已检查的项目与授权宿主能力面。</p>
+    </div>
+    <div class="custom-grid"><article><span class="custom-mark">R</span><div><h3>Rules</h3><p>Project · 1</p></div></article></div>
+  </section>
+  <section class="section" data-section="methodology" aria-labelledby="section-methodology">
+    <div class="section-heading">
+      <div><span class="eyebrow">05 · 边界</span><h2 id="section-methodology">证据与方法</h2></div>
+      <p>仅使用读者安全证据。</p>
+    </div>
+    <div class="evidence-grid"><div><span>证据模式</span><strong>—</strong></div><div><span>任务 Episode</span><strong>0</strong></div><div><span>含编辑 Episode</span><strong>0</strong></div><div><span>抽样</span><strong>0 / 0</strong></div><div><span>可信度</span><strong>—</strong></div><div><span>学习状态</span><strong>—</strong></div></div>
+    
+    <p class="method-note">活动总量只描述用量，不直接代表质量、效率或节省。流畅度结论来自已复核任务样本，并受已保留证据边界约束。</p>
+  </section>
+<footer>由同一份已复核 Harness source 生成 · 自包含 Codex HTML</footer>
+</main>
+<dialog id="manual-copy-dialog" class="manual-copy-dialog" aria-labelledby="manual-copy-title" aria-describedby="manual-copy-description">
+  <div class="dialog-heading">
+    <div>
+      <span class="label">手动复制</span>
+      <h3 id="manual-copy-title">复制 AI 修复提示词</h3>
+    </div>
+  </div>
+  <p id="manual-copy-description">自动复制被阻止，下面已选中完整提示词。</p>
+  <textarea id="manual-copy-text" readonly aria-label="AI 修复提示词"></textarea>
+  <div class="dialog-actions">
+    <button type="button" class="action-button ghost" data-close-finding-dialog="manual-copy-dialog">关闭</button>
+  </div>
+</dialog>
+<script id="harness-report-data" type="application/json">{"mode":"html","language":"zh-CN","dataPath":"/tmp/paicli-bh-findings.json","target":{"name":"paicli","path":"/Users/itwanger/Documents/GitHub/paicli"},"summary":{"projectName":"PaiCLI","locale":"zh-CN","modelId":"agent-work-loop-v4","reportContractVersion":25,"overview":"PaiCLI 已有清晰的项目记忆、分层测试和安全控制机制，但当前 Codex 工作流主要停在“规则与测试存在”：跨层安全边界缺少不可绕过的端到端证明，当前跨模块改动没有一条可发现的 affected-check 路由，近 30 天的变更任务也缺少与最终状态绑定的验证和验收记录。建议沿 Operationalize 轨道把现有机制接入日常任务闭环。","dimensions":[{"id":"task-understanding","label":"任务理解","score":68,"summary":"AGENTS.md、PAI.md 与 README.md 的权威顺序和核心命令基本一致，但根级 Agent 指南过载，关键安全与验证规则被大量实现细节稀释。","findingRefs":["root-agent-guide-context-overload"]},{"id":"controlled-execution","label":"可控执行","score":72,"summary":"HITL、PathGuard 与 CommandGuard 已在代码和分层单测中出现，但“批准仍不能越过策略拒绝”的组合边界尚未由一条聚焦验证证明。","findingRefs":["policy-approval-nonbypass-unverified"]},{"id":"change-validation","label":"改动验证","score":54,"summary":"仓库拥有大量测试和 quick/full 路径，当前变更也配套增加了测试代码，但没有可发现的命令把 ledger、重试和记忆去重的最终变更映射到同一组相关检查。","findingRefs":["cross-cutting-change-no-affected-check-route"]},{"id":"reliable-delivery","label":"可靠交付","score":42,"summary":"会话中可以观察到交接，但没有与最终变更绑定的结构化完成信号、相关验证结果或真实验收边界。","findingRefs":["changed-task-handoff-without-acceptance-evidence"]},{"id":"learning-capture","label":"经验沉淀","score":35,"summary":"出现了明确的持久偏好需求，但本次范围不读取 Memory 正文，也没有后续独立任务证明检索、应用和结果改善，学习效果保持未观测。","findingRefs":["persistent-preference-no-later-verification"]}],"aiAgentPractice":{"inspectedSurfaces":["Rules"],"coverageRows":[{"surface":"Rules","scopes":["Project"],"count":1,"paths":["AGENTS.md"]}]},"assignmentSummaries":[]},"findings":[{"id":"policy-approval-nonbypass-unverified","title":"人工批准后仍不可越过策略拒绝的边界缺少组合验证","severity":"Medium","reason":"AGENTS.md 明确要求用户不能批准被策略层拒绝的请求，代码路径也会在 HITL 批准后继续进入 ToolRegistry；现有测试分别覆盖 HITL 决策、PathGuard 越界和 CommandGuard 危险命令，但没有一条测试把“批准危险调用 → PathGuard/CommandGuard 再拒绝 → 无副作用并写入 policy deny 审计”串起来。该缺口使安全层次顺序在重构后可能退化而不被聚焦回归发现。","dimensionRefs":["controlled-execution"],"subdimensionRefs":["permission-boundary"],"aiFixPrompt":"/better-harness fix this issue\n\n在现有 HitlToolRegistryTest 或最小相邻安全测试 owner 中，补一条端到端组合用例：让 HITL 明确批准一个越界 write_file 和一个被 CommandGuard 拒绝的 execute_command，确认父级策略仍拒绝、目标状态不变，并保留 policy deny 审计。不要扩大黑名单或改变现有审批语义。\n\n## Validation\n\n- 运行 mvn test -Dtest=HitlToolRegistryTest,PathGuardTest,CommandGuardTest,AuditLogTest -DskipTests=false\n- 确认批准路径、策略拒绝、无副作用和审计归因同时通过","expectedArtifact":"Test","expectedOutput":["用一条可重复的聚焦回归证明 HITL 批准不能绕过路径或命令策略，并保留可审计的拒绝结果。"]},{"id":"cross-cutting-change-no-affected-check-route","title":"当前跨模块变更没有一条可发现的 affected-check 命令","severity":"Medium","reason":"当前变更同时影响 ReAct、Plan、Team、ConversationLedger、OpenAI-compatible 重试和长期记忆去重；仓库已新增或修改相应测试，但 AGENTS.md 的验证矩阵只提供通用领域入口，mvn clean package 又默认跳过测试。Agent 因此无法从任务入口直接得知哪一组最小检查覆盖最终变更，容易只运行 quick 或单个邻近测试而遗漏跨路径不变量。","dimensionRefs":["change-validation"],"subdimensionRefs":["relevant-check"],"aiFixPrompt":"/better-harness fix this issue\n\n在 AGENTS.md 的验证路由或其明确链接的项目验证文档中，为当前这类跨模块改动补一条最小 affected-check 入口，覆盖 ConversationLedger、三条 Agent 路径、有限重试和 LongTermMemory 去重；复用现有测试类，不新建平行测试框架。\n\n## Validation\n\n- 运行 mvn test -Dtest=ConversationLedgerTest,AgentConversationLedgerTest,AgentOrchestratorTest,MainPlanAgentFactoryTest,LlmRetryPolicyTest,AbstractOpenAiCompatibleClientRetryTest,LongTermMemoryTest -DskipTests=false\n- 确认命令可从 Agent 指南按变更类型直接发现，并记录最终结果","expectedArtifact":"Rule","expectedOutput":["让 Agent 能从跨模块改动直接路由到一条覆盖最终状态的最小 Maven 检查集合。"]},{"id":"changed-task-handoff-without-acceptance-evidence","title":"变更任务的交接没有与最终状态绑定的验收证据","severity":"Medium","reason":"近 30 天的 Codex 会话中，多次有变更的任务以助手 handoff 结束；唯一可见检查是通过的 git diff --check，但其与最终内容或行为的相关性未闭合，也没有结构化完成信号或用户验收。该证据不代表任务失败，却说明当前工作流无法区分“宣布完成”与“结果已被相关检查或用户接受”。","dimensionRefs":["reliable-delivery"],"subdimensionRefs":["acceptance-evidence"],"aiFixPrompt":"/better-harness fix this issue\n\n在项目 Agent 交付约定中增加一个精简的完成边界：变更类任务在 handoff 前记录最终变更范围、与需求直接相关的检查及结果，以及真实验收边界；纯文档或内容任务也要说明采用了哪种内容审阅，而不是只给完成声明。将详细步骤放在 docs/agents-reference.md，根级 AGENTS.md 只保留短入口。\n\n## Validation\n\n- 用一个后续 PaiCLI 变更任务演练该约定\n- 确认最终 handoff 能绑定最终变更、相关检查结果和验收状态，而不只引用 git diff --check","expectedArtifact":"Workflow","expectedOutput":["让后续任务的交付记录可区分助手声明、相关验证和真实验收。"]},{"id":"root-agent-guide-context-overload","title":"根级 AGENTS.md 过载，关键操作规则被实现细节稀释","severity":"Medium","reason":"当前唯一项目级 Codex Rule 是 240 行的根 AGENTS.md，且仓库没有嵌套 AGENTS.md。文件同时承载架构清单、provider 协议细节、长篇 TUI 行为和模块级规则；真正影响所有任务的安全边界、同步规则和验证矩阵直到中后段才出现。PAI.md 只有 31 行且与核心命令基本一致，因此问题不是缺少导航，而是根指南没有充分利用已存在的 docs/agents-reference.md 做渐进披露。","dimensionRefs":["task-understanding"],"subdimensionRefs":["relevant-context"],"aiFixPrompt":"/better-harness fix this issue\n\n精简根 AGENTS.md：保留信息优先级、运行前提、常用命令、始终适用的安全边界、修改联动规则和验证入口；把 TUI 细节、provider 协议说明、模块级行为和长架构目录迁移到现有 docs/agents-reference.md，并保留清晰的一跳链接。不要改变 PAI.md 与 README.md 的权威顺序。\n\n## Validation\n\n- 确认根 AGENTS.md 明显低于 200 行且所有关键安全与验证入口仍可一跳发现\n- 对照 PAI.md 和 README.md 检查命令、权威顺序与未交付边界没有冲突","expectedArtifact":"Rule","expectedOutput":["让 Agent 先获得短而高信号的全局规则，再按任务加载实现细节，降低上下文腐化风险。"]},{"id":"persistent-preference-no-later-verification","title":"持久偏好需求没有后续独立任务验证其应用效果","severity":"Low","reason":"会话事实中出现过明确的全局偏好保存请求，并观察到变更与 handoff；本次审查按授权不读取 Memory 正文，也没有后续独立任务证明该偏好被检索、与任务相关、实际应用且减少重复纠正。因此不能断言保存失败，但当前闭环缺少一个不暴露 Memory 内容的跨会话效果验证。","dimensionRefs":["learning-capture"],"subdimensionRefs":["lifecycle-repeat-detection"],"aiFixPrompt":"/better-harness fix this issue\n\n为显式 /save 或自然语言持久偏好建立一个 reader-safe 的后续验证约定：在独立会话中使用无敏感内容的测试偏好，验证检索和应用结果，并记录是否减少重复纠正；不要读取、复制或汇报真实 Memory 正文，也不要在同一窗口声称长期效果已经改善。\n\n## Validation\n\n- 在后续独立会话中执行一次无敏感内容的偏好应用检查\n- 仅记录检索、相关、应用和结果状态，并保留后续可比较窗口","expectedArtifact":"Workflow","expectedOutput":["建立不暴露 Memory 正文的跨会话验证链，区分已保存、已应用和 later outcome improved。"]}]}</script>
+<script id="harness-report-interactions">(function installHtmlReportInteractions({
+  document,
+  navigator,
+  labels,
+  schedule = (callback, delay) => globalThis.setTimeout(callback, delay),
+}) {
+  document.documentElement.classList.remove("no-js");
+
+  const reportDataElement = document.getElementById("harness-report-data");
+  const reportData = reportDataElement
+    ? JSON.parse(reportDataElement.textContent || "{}")
+    : {};
+  const findings = new Map(
+    (Array.isArray(reportData.findings) ? reportData.findings : [])
+      .map((finding) => [String(finding?.id ?? ""), finding]),
+  );
+  const status = document.getElementById("copy-status");
+  const manualDialog = document.getElementById("manual-copy-dialog");
+  const manualText = document.getElementById("manual-copy-text");
+  const dialogTriggers = new Map();
+
+  function report(message, state) {
+    if (!status) return;
+    status.textContent = message;
+    status.dataset.state = state;
+  }
+
+  function legacyCopy(prompt) {
+    const textarea = document.createElement("textarea");
+    textarea.value = prompt;
+    textarea.setAttribute("readonly", "");
+    textarea.style.position = "fixed";
+    textarea.style.opacity = "0";
+    document.body.append(textarea);
+    try {
+      textarea.select();
+      return document.execCommand("copy") === true;
+    } catch {
+      return false;
+    } finally {
+      textarea.remove();
+    }
+  }
+
+  function copied(trigger) {
+    report(labels.copySuccess, "success");
+    if (trigger) {
+      const originalLabel = trigger.textContent;
+      trigger.textContent = labels.copied;
+      schedule(() => {
+        trigger.textContent = originalLabel || labels.copy;
+      }, 1800);
+    }
+    return true;
+  }
+
+  async function copyFinding(findingId, trigger) {
+    const prompt = findings.get(String(findingId))?.aiFixPrompt;
+    if (typeof prompt !== "string" || prompt.length === 0) {
+      report(labels.missingPrompt, "error");
+      return false;
+    }
+
+    try {
+      if (!navigator?.clipboard?.writeText) throw new Error("Clipboard API unavailable");
+      await navigator.clipboard.writeText(prompt);
+      return copied(trigger);
+    } catch {
+      if (legacyCopy(prompt)) return copied(trigger);
+    }
+
+    if (manualDialog && typeof manualDialog.showModal === "function") {
+      dialogTriggers.set(manualDialog.id, trigger);
+      if (!manualDialog.open) manualDialog.showModal();
+    }
+    if (manualText) {
+      manualText.value = prompt;
+      manualText.focus();
+      manualText.select();
+    }
+    report(labels.manualCopy, "error");
+    return false;
+  }
+
+  function openDialog(dialogId, trigger) {
+    const dialog = document.getElementById(dialogId);
+    if (!dialog || typeof dialog.showModal !== "function") return false;
+    dialogTriggers.set(dialogId, trigger);
+    dialog.showModal();
+    return true;
+  }
+
+  function closeDialog(dialogId) {
+    const dialog = document.getElementById(dialogId);
+    if (!dialog || !dialog.open || typeof dialog.close !== "function") return false;
+    dialog.close();
+    return true;
+  }
+
+  for (const trigger of document.querySelectorAll("[data-copy-finding]")) {
+    trigger.addEventListener("click", () => copyFinding(trigger.dataset.copyFinding, trigger));
+  }
+  for (const trigger of document.querySelectorAll("[data-view-finding-dialog]")) {
+    trigger.addEventListener("click", () => openDialog(trigger.dataset.viewFindingDialog, trigger));
+  }
+  for (const trigger of document.querySelectorAll("[data-close-finding-dialog]")) {
+    trigger.addEventListener("click", () => closeDialog(trigger.dataset.closeFindingDialog));
+  }
+  const interactiveDialogs = [
+    ...document.querySelectorAll("dialog[data-finding-dialog-id]"),
+    manualDialog,
+  ].filter(Boolean);
+  for (const dialog of interactiveDialogs) {
+    dialog.addEventListener("close", () => {
+      const trigger = dialogTriggers.get(dialog.id);
+      dialogTriggers.delete(dialog.id);
+      trigger?.focus();
+    });
+    dialog.addEventListener("click", (event) => {
+      if (event.target !== dialog) return;
+      const rect = dialog.getBoundingClientRect();
+      const outside = event.clientX < rect.left
+        || event.clientX > rect.right
+        || event.clientY < rect.top
+        || event.clientY > rect.bottom;
+      if (outside) closeDialog(dialog.id);
+    });
+  }
+
+  return { copyFinding, openDialog, closeDialog };
+})({document,navigator,labels:{"copy":"复制 AI 修复","copied":"已复制","copySuccess":"已复制，请粘贴到 Codex 输入框。","manualCopy":"自动复制被阻止，请手动复制已选中的提示词。","missingPrompt":"这个问题没有可用的 AI 修复提示词。"}});</script>
+</body>
+</html>
