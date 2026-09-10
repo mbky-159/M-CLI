@@ -15,7 +15,9 @@ assert os.getuid() == 10001
 assert not pathlib.Path('/var/run/docker.sock').exists()
 mounts = pathlib.Path('/proc/mounts').read_text().splitlines()
 assert any(x.split()[1] == '/' and 'ro' in x.split()[3].split(',') for x in mounts)
-assert set(os.listdir('/sys/class/net')) == {'lo'}
+network_lines = pathlib.Path('/proc/net/dev').read_text().splitlines()[2:]
+interfaces = {line.split(':', 1)[0].strip() for line in network_lines if ':' in line}
+assert interfaces == {'lo'}, interfaces
 for directory in ['/workspace', '/home/sandbox', '/tmp']:
     path = pathlib.Path(directory) / 'mcli-probe'
     path.write_text('isolated')
@@ -28,7 +30,11 @@ print(json.dumps({'uid': os.getuid(), 'root_read_only': True,
 
 
 def command(args, timeout=30):
-    return subprocess.run(args, check=True, capture_output=True, text=True, timeout=timeout).stdout
+    result = subprocess.run(args, capture_output=True, text=True, timeout=timeout)
+    if result.returncode != 0:
+        details = "\n".join(part.strip() for part in (result.stdout, result.stderr) if part.strip())
+        raise RuntimeError(f"command failed ({result.returncode}): {' '.join(args)}\n{details}")
+    return result.stdout
 
 
 def validate(config):
