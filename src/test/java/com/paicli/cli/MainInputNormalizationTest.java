@@ -59,10 +59,10 @@ class MainInputNormalizationTest {
     void startupBannerUsesOpenLayoutWithoutRightBorder() {
         List<String> lines = Main.startupBannerLines();
 
-        assertTrue(lines.stream().anyMatch(line -> line.contains("PaiCLI")));
-        assertTrue(lines.stream().anyMatch(line -> line.contains("π")));
+        assertTrue(lines.stream().anyMatch(line -> line.contains("M-CLI")));
+        assertFalse(lines.stream().anyMatch(line -> line.contains("π")));
         assertTrue(lines.stream().anyMatch(line -> line.contains("v16.1.0")));
-        assertTrue(lines.stream().anyMatch(line -> line.contains("████████")));
+        assertTrue(lines.stream().anyMatch(line -> line.contains("██  ██  ██")));
         assertTrue(lines.stream().anyMatch(line -> line.contains("Tips for getting started")));
         assertTrue(lines.stream().anyMatch(line -> line.contains("@path")));
         assertTrue(lines.stream().noneMatch(line -> line.contains("for shortcuts")));
@@ -95,18 +95,18 @@ class MainInputNormalizationTest {
     @Test
     void rendersBetterHarnessMarkdownInsteadOfPrintingSourceMarkers() {
         String rendered = Main.renderBetterHarnessMarkdown("""
-                # PaiCLI Better Harness 报告
+                # M-CLI Better Harness 报告
 
                 ## 范围与限制
                 - **会话证据**：仅包含脱敏元数据
                 1. **BH-001**：补充验证记录
                 """, 100);
 
-        assertTrue(rendered.contains("PaiCLI Better Harness 报告"), rendered);
+        assertTrue(rendered.contains("M-CLI Better Harness 报告"), rendered);
         assertTrue(rendered.contains("范围与限制"), rendered);
         assertTrue(rendered.contains("- 会话证据：仅包含脱敏元数据"), rendered);
         assertTrue(rendered.contains("1. BH-001：补充验证记录"), rendered);
-        assertFalse(rendered.contains("# PaiCLI"), rendered);
+        assertFalse(rendered.contains("# M-CLI"), rendered);
         assertFalse(rendered.contains("## 范围"), rendered);
         assertFalse(rendered.contains("**"), rendered);
     }

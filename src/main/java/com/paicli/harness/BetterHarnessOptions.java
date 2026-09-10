@@ -3,7 +3,7 @@ package com.paicli.harness;
 import java.util.Locale;
 
 /**
- * User-facing options for the native PaiCLI Better Harness review.
+ * User-facing options for the native M-CLI Better Harness review.
  */
 public record BetterHarnessOptions(Depth depth, boolean inline) {
 

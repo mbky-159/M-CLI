@@ -30,7 +30,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 /**
- * PaiCLI-native Better Harness workflow.
+ * M-CLI-native Better Harness workflow.
  *
  * <p>Three read-only evidence specialists run independently and in parallel.
  * A lead model call reconciles their candidate findings, then deterministic Java
@@ -138,7 +138,7 @@ public final class BetterHarnessRunner {
                         bundle.projectHarness()),
                 new Lane(
                         "agent-customize",
-                        "Are PaiCLI rules, Skills, prompts, MCP surfaces, Memory entrypoints, and "
+                        "Are M-CLI rules, Skills, prompts, MCP surfaces, Memory entrypoints, and "
                                 + "policy assets present and coherently wired? Presence never proves use.",
                         bundle.agentCustomize()));
 
@@ -247,7 +247,7 @@ public final class BetterHarnessRunner {
                 confidence, smallest repair owner, and acceptance check.
                 Do not assign the final severity or an overall score.
 
-                PaiCLI adaptation guidance:
+                M-CLI adaptation guidance:
                 %s
                 """.formatted(skillGuidance);
         String user = """
@@ -272,7 +272,7 @@ public final class BetterHarnessRunner {
                             String skillGuidance,
                             BetterHarnessOptions.Depth depth) throws IOException {
         String system = """
-                You are the lead reviewer for a PaiCLI-native Better Harness run.
+                You are the lead reviewer for a M-CLI-native Better Harness run.
                 Reconcile the three independent evidence passes. Keep only findings with a
                 defensible consequence, evidence boundary, smallest repair owner, and verifier.
                 Do not turn unobserved behavior into a negative score. Do not merge findings
@@ -281,7 +281,7 @@ public final class BetterHarnessRunner {
 
                 Return JSON only, with this exact shape:
                 {
-                  "reportMarkdown": "# PaiCLI Better Harness Report\\n...",
+                  "reportMarkdown": "# M-CLI Better Harness Report\\n...",
                   "findings": [
                     {
                       "id": "BH-001",
@@ -300,7 +300,7 @@ public final class BetterHarnessRunner {
                 prioritized findings, three or fewer next moves, and evidence brief.
                 Write the report in Chinese. Do not claim causal improvement from one run.
 
-                PaiCLI adaptation guidance:
+                M-CLI adaptation guidance:
                 %s
                 """.formatted(skillGuidance);
         StringBuilder user = new StringBuilder("Review depth: ")
@@ -342,7 +342,7 @@ public final class BetterHarnessRunner {
             // Preserve useful model output as a partial report instead of losing the run.
         }
         String fallback = content.isBlank()
-                ? "# PaiCLI Better Harness Report\n\n本次 lead 未返回可用报告。"
+                ? "# M-CLI Better Harness Report\n\n本次 lead 未返回可用报告。"
                 : content;
         return new Draft(fallback, MAPPER.createArrayNode(), false);
     }
@@ -406,7 +406,7 @@ public final class BetterHarnessRunner {
     private static String normalizeMarkdown(String markdown, boolean structured) {
         String normalized = markdown == null ? "" : markdown.trim();
         if (!normalized.startsWith("# ")) {
-            normalized = "# PaiCLI Better Harness Report\n\n" + normalized;
+            normalized = "# M-CLI Better Harness Report\n\n" + normalized;
         }
         if (!structured) {
             normalized += "\n\n> 注意：lead 未返回规范 JSON，本报告按非结构化结果保留，"
@@ -439,7 +439,7 @@ public final class BetterHarnessRunner {
                 <head>
                   <meta charset="utf-8">
                   <meta name="viewport" content="width=device-width,initial-scale=1">
-                  <title>PaiCLI Better Harness Report</title>
+                  <title>M-CLI Better Harness Report</title>
                   <style>
                     :root { color-scheme: light dark; }
                     body { margin: 0; font-family: ui-sans-serif, system-ui, sans-serif;

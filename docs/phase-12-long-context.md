@@ -1,6 +1,6 @@
 # 第 12 期开发任务：长上下文工程
 
-> 本期目标是让 PaiCLI 的运行策略随模型上下文窗口变化，而不是继续使用固定 300K token 预算和固定 RAG topK。
+> 本期目标是让 M-CLI 的运行策略随模型上下文窗口变化，而不是继续使用固定 300K token 预算和固定 RAG topK。
 
 ## 1. 已交付范围
 
@@ -40,7 +40,7 @@
 - 不实现 Anthropic `cache_control` 块
 - 不向 GLM / DeepSeek 请求体注入未确认兼容的私有 cache 字段
 - 不把 MCP resource body 自动塞进 system prompt
-- 不改变 `pom.xml` 的 Maven 产物版本，Jar 仍是 `paicli-1.0-SNAPSHOT.jar`
+- 不改变 `pom.xml` 的 Maven 产物版本，Jar 仍是 `m-cli-1.0-SNAPSHOT.jar`
 
 ## 3. 核心文件
 

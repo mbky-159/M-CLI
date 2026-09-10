@@ -84,7 +84,7 @@ class PromptAssemblerTest {
 
         assertTrue(prompt.contains("## Language"));
         assertTrue(prompt.contains("## Tool Availability"));
-        assertTrue(prompt.contains("当前模型不支持 PaiCLI 原生工具调用"));
+        assertTrue(prompt.contains("当前模型不支持 M-CLI 原生工具调用"));
         assertTrue(prompt.contains("绝对不要输出伪造的工具标签"));
         assertTrue(prompt.contains("<toolcall>"));
         assertFalse(prompt.contains("## Tools"));

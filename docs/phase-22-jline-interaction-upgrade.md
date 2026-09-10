@@ -1,6 +1,6 @@
 # Phase 22: JLine-first 交互升级
 
-本阶段目标：把 PaiCLI 从“使用 JLine 的 CLI”升级为“以 JLine 4 为核心 UI runtime 的 Agent 终端”，交互体验对齐 Claude Code / Qoder CLI 一类产品。
+本阶段目标：把 M-CLI 从“使用 JLine 的 CLI”升级为“以 JLine 4 为核心 UI runtime 的 Agent 终端”，交互体验对齐 Claude Code / Qoder CLI 一类产品。
 
 参考文档：
 
@@ -101,7 +101,7 @@ Terminal
 
 目标：历史好用，但不泄露敏感内容。
 
-- 已接入 `PaiCliHistory`，基于 JLine `DefaultHistory` 做 PaiCLI 过滤策略。
+- 已接入 `PaiCliHistory`，基于 JLine `DefaultHistory` 做 M-CLI 过滤策略。
 - 默认配置 `~/.paicli/history/input.history` 持久化，可用 `paicli.history.file` / `PAICLI_HISTORY_FILE` 覆盖；如果配置值指向目录，则使用该目录下的 `input.history`。
 - 已设置 history size / file size，默认 `2000` / `10000`，可用 `paicli.history.size`、`paicli.history.fileSize` 或对应环境变量覆盖。
 - 已忽略空白、重复、超长输入。
@@ -156,7 +156,7 @@ HITL：
 
 目标：借鉴 JLine 能力，但不冒进替换主命令系统。
 
-- 暂不使用 `jline-shell` 替换 PaiCLI 现有命令解析。
+- 暂不使用 `jline-shell` 替换 M-CLI 现有命令解析。
 - 优先借鉴 `SystemCompleter` 思路强化 `/` 命令补全。
 - `console-ui` 可小实验用于 Plan review / HITL。
 - `less/table/nano` 可用于后续长审计、MCP logs、搜索结果查看。
@@ -182,4 +182,4 @@ HITL：
 - Ctrl+O、ESC、Ctrl+V、Tab、上下键正常。
 - Plan review 方向键不误判 ESC。
 - HITL 审批期间不吞输入。
-- `java -jar target/paicli-1.0-SNAPSHOT.jar` 真机验证。
+- `java -jar target/m-cli-1.0-SNAPSHOT.jar` 真机验证。

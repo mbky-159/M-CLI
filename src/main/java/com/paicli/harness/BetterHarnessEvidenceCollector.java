@@ -106,7 +106,7 @@ public final class BetterHarnessEvidenceCollector {
         lane.put("lastSeen", lastTimestamp == Long.MIN_VALUE
                 ? null : Instant.ofEpochMilli(lastTimestamp).toString());
         lane.put("limitations", List.of(
-                "Only the active PaiCLI ledger is included.",
+                "Only the active M-CLI ledger is included.",
                 "Message bodies, reasoning, tool arguments, results, images, and memory bodies are excluded.",
                 "Outcome claims that require content-level evidence must remain unobserved."));
         return lane;

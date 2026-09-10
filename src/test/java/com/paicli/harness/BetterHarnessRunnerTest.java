@@ -168,7 +168,7 @@ class BetterHarnessRunnerTest {
             }
             String json = """
                     {
-                      "reportMarkdown": "# PaiCLI Better Harness Report\\n\\n## Findings\\n\\nOne finding.",
+                      "reportMarkdown": "# M-CLI Better Harness Report\\n\\n## Findings\\n\\nOne finding.",
                       "findings": [
                         {
                           "id": "BH-001",

@@ -2,13 +2,13 @@
   "schemaVersion": "1.0",
   "suite": {
     "id": "paicli-native-agentbench-v0.1",
-    "name": "PaiCLI Native AgentBench",
+    "name": "M-CLI Native AgentBench",
     "version": "0.1",
     "status": "planned",
     "language": "zh-CN",
     "taskCount": 28,
     "maxPoints": 100,
-    "purpose": "Evaluate model performance inside the same PaiCLI harness across code, terminal, tool orchestration, long-horizon, safety, and reasoning tasks.",
+    "purpose": "Evaluate model performance inside the same M-CLI harness across code, terminal, tool orchestration, long-horizon, safety, and reasoning tasks.",
     "externalBenchmarkClaim": false
   },
   "scope": {
@@ -211,7 +211,7 @@
       "wall-clock duration",
       "cost",
       "tool-call count",
-      "pairwise win, tie, loss, and position consistency against the previous stable PaiCLI version"
+      "pairwise win, tie, loss, and position consistency against the previous stable M-CLI version"
     ],
     "bestOfNAllowed": false
   },
@@ -303,7 +303,7 @@
     "mustPublishEveryCategory": true,
     "mustPublishFailedCases": true,
     "mustPublishAllCompletedCandidateModels": true,
-    "rerunAfterProductChange": "Rerun all three models on a new PaiCLI commit and retain the prior report."
+    "rerunAfterProductChange": "Rerun all three models on a new M-CLI commit and retain the prior report."
   },
   "runEvidenceSchema": {
     "requiredFields": [

@@ -71,7 +71,7 @@ class ZhipuSearchProviderTest {
                               "publish_date": "2026-01-01"
                             },
                             {
-                              "title": "PaiCLI 教程",
+                              "title": "M-CLI 教程",
                               "link": "https://paicoding.com/article/paicli",
                               "content": "从零打造 Java Agent CLI"
                             }

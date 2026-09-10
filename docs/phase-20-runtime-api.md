@@ -30,7 +30,7 @@
 
 ```bash
 PAICLI_RUNTIME_API_KEY=your_local_api_key \
-java -jar target/paicli-1.0-SNAPSHOT.jar serve --http --port 8080
+java -jar target/m-cli-1.0-SNAPSHOT.jar serve --http --port 8080
 ```
 
 安全策略：
@@ -74,5 +74,5 @@ mvn test -Dtest=DurableTaskManagerTest,RuntimeApiServerTest,CliCommandParserTest
 mvn test -Pquick
 mvn test
 mvn -q clean package -DskipTests
-PAICLI_RUNTIME_API_KEY=test java -jar target/paicli-1.0-SNAPSHOT.jar serve --http --port 0
+PAICLI_RUNTIME_API_KEY=test java -jar target/m-cli-1.0-SNAPSHOT.jar serve --http --port 0
 ```

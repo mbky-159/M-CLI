@@ -1,6 +1,6 @@
 # LLM-as-a-Judge 离线评测教程
 
-PaiCLI 的 `com.paicli.eval` 包提供两个可独立调用的评测组件：
+M-CLI 的 `com.paicli.eval` 包提供两个可独立调用的评测组件：
 
 - `LlmJudge`：按 Rubric（评分规则）对单个 Agent 输出逐维打分，适合 Reference-based 或 Pointwise 评测。
 - `PositionBalancedPairwiseJudge`：对 baseline 和 candidate 做两次 A/B 对比，第二次交换位置；只有两次都指向同一个逻辑候选时才接受胜者。

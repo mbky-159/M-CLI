@@ -26,7 +26,7 @@ import java.util.UUID;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
- * Append-only ledger for the original LLM messages produced during one PaiCLI session.
+ * Append-only ledger for the original LLM messages produced during one M-CLI session.
  *
  * <p>The mutable {@code conversationHistory} lists used by Agent implementations are
  * delivery views: image pruning, {@code /clear}, and context compaction may replace or

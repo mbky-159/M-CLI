@@ -21,7 +21,7 @@ class SuiteDefinitionTest {
         SuiteDefinition suite = SuiteDefinition.load(suiteFile);
 
         assertEquals("1.0", suite.version());
-        assertEquals("PaiCLI Agent v1", suite.name());
+        assertEquals("M-CLI Agent v1", suite.name());
         assertEquals(3, suite.activeCases().size());
         CaseDefinition first = suite.cases().get(0);
         assertEquals(tempDir.resolve("fixtures/l1").toAbsolutePath().normalize(),
@@ -100,8 +100,8 @@ class SuiteDefinitionTest {
     @Test
     void rejectsUnknownJsonFields(@TempDir Path tempDir) throws Exception {
         String json = validSuiteJson().replace(
-                "\"name\":\"PaiCLI Agent v1\"",
-                "\"name\":\"PaiCLI Agent v1\",\"unexpected\":true");
+                "\"name\":\"M-CLI Agent v1\"",
+                "\"name\":\"M-CLI Agent v1\",\"unexpected\":true");
 
         assertThrows(Exception.class, () -> SuiteDefinition.load(writeSuite(tempDir, json)));
     }
@@ -116,7 +116,7 @@ class SuiteDefinitionTest {
         return """
                 {
                   "version":"1.0",
-                  "name":"PaiCLI Agent v1",
+                  "name":"M-CLI Agent v1",
                   "cases":[
                     %s,
                     %s,

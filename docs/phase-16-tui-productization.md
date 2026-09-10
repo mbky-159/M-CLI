@@ -23,13 +23,13 @@
 
 ## 1. 目标与产出物
 
-让 PaiCLI 从"纯 CLI"升级为"终端 GUI"（TUI），具备文件树浏览、代码高亮、对话历史可视化、配置管理等产品级体验，**不牺牲任何现有 Agent 能力**。
+让 M-CLI 从"纯 CLI"升级为"终端 GUI"（TUI），具备文件树浏览、代码高亮、对话历史可视化、配置管理等产品级体验，**不牺牲任何现有 Agent 能力**。
 
 **为什么做 TUI 而不是继续纯 CLI**：
 
-- PaiCLI 当前已内置 9 个工具 + MCP 60+ 个工具，用户记忆成本高
+- M-CLI 当前已内置 9 个工具 + MCP 60+ 个工具，用户记忆成本高
 - 文件树 / 代码高亮 / 对话历史回滚这些"展示型"需求，纯 CLI 手工渲染成本高且体验差
-- Claude Code、Cursor、Aider 等竞品都有 TUI，PaiCLI 需要产品化竞争力
+- Claude Code、Cursor、Aider 等竞品都有 TUI，M-CLI 需要产品化竞争力
 - Skill 系统（第 15 期）的 TUI 可视化是天然配套
 
 最终交付：
@@ -156,7 +156,7 @@ if (shouldUseTui()) {
 
 ### 2.5 代码高亮设计
 
-**高亮引擎**：**不使用第三方高亮库**（如 Pygments / highlight.js 的 Java 移植版），而是用 PaiCLI 自己第 4 期 `CodeChunker` 和 `CodeAnalyzer` 的能力做**轻量级语法着色**。
+**高亮引擎**：**不使用第三方高亮库**（如 Pygments / highlight.js 的 Java 移植版），而是用 M-CLI 自己第 4 期 `CodeChunker` 和 `CodeAnalyzer` 的能力做**轻量级语法着色**。
 
 实现路径：
 1. 从 `CodeChunker` 拿代码块的 `language` 字段
@@ -164,7 +164,7 @@ if (shouldUseTui()) {
 3. 输出 ANSI 256 色字符串，直接交给 Lanterna `TextArea` 渲染
 
 **为什么不用第三方库**：
-- PaiCLI 已有 AST 解析能力（第 4 期 JavaParser），Java 代码着色可以复用
+- M-CLI 已有 AST 解析能力（第 4 期 JavaParser），Java 代码着色可以复用
 - 其他语言用正则表达式着色足够（`CodeChunker` 已能识别语言）
 - 避免引入 highlight.js / Pygments 等 1MB+ 的依赖
 
@@ -561,7 +561,7 @@ public String highlight(String code, String language) {
 ```
 │ 📄 README.md（前 50 行）                          │
 │ ┌─────────────────────────────────────────────┐  │
-│ │ # PaiCLI                                     │  │
+│ │ # M-CLI                                     │  │
 │ │ 一个 Java Agent CLI...                       │  │
 │ └─────────────────────────────────────────────┘  │
 ```
@@ -647,19 +647,19 @@ public String highlight(String code, String language) {
 **场景 A：正常 TUI 启动**
 ```bash
 # 终端尺寸 ≥ 80×24，显式启用 TUI
-PAICLI_TUI=true java -jar target/paicli-1.0-SNAPSHOT.jar
+PAICLI_TUI=true java -jar target/m-cli-1.0-SNAPSHOT.jar
 ```
 **期望**：Lanterna 三栏窗口正常渲染，输入框可交互，可以提交任务。
 
 **场景 B：默认 CLI**
 ```bash
-java -jar target/paicli-1.0-SNAPSHOT.jar
+java -jar target/m-cli-1.0-SNAPSHOT.jar
 ```
 **期望**：进入 JLine 行编辑器，不弹 Lanterna 全屏窗口。
 
 **场景 C：CLI 强制降级**
 ```bash
-PAICLI_TUI=true NO_TUI=true java -jar target/paicli-1.0-SNAPSHOT.jar
+PAICLI_TUI=true NO_TUI=true java -jar target/m-cli-1.0-SNAPSHOT.jar
 ```
 **期望**：降级到 JLine 行编辑器，所有现有 CLI 功能正常。
 
@@ -786,7 +786,7 @@ PAICLI_TUI=true NO_TUI=true java -jar target/paicli-1.0-SNAPSHOT.jar
 
 ```
 > # 终端尺寸 79×23
-> java -jar target/paicli-1.0-SNAPSHOT.jar
+> java -jar target/m-cli-1.0-SNAPSHOT.jar
 ```
 **期望**：检测到 cols < 80 或 rows < 24 → 降级 CLI 模式，Banner 加降级提示。
 
@@ -913,7 +913,7 @@ PAICLI_TUI=true NO_TUI=true java -jar target/paicli-1.0-SNAPSHOT.jar
 - Banner v16.0.0 + 标语 + 快捷键提示
 - `pom.xml` 添加 Lanterna 依赖
 - **安装包分发**（参见 §6.7）：
-  - `mvn clean package` 产出 `target/paicli-1.0-SNAPSHOT.jar`（pom.xml 仍保持 `1.0-SNAPSHOT`，Banner 显示 `16.0.0`）
+  - `mvn clean package` 产出 `target/m-cli-1.0-SNAPSHOT.jar`（pom.xml 仍保持 `1.0-SNAPSHOT`，Banner 显示 `16.0.0`）
   - 配置 `maven-assembly-plugin` 或 `maven-shade-plugin` 做**可执行 fat jar**（包含 Lanterna 依赖，用户 `java -jar` 即可运行）
   - 编写 `INSTALL.md`（安装说明：JDK 17 + `java -jar` 两步）
   - GitHub Actions Release workflow 留给后续分发增强
@@ -1116,7 +1116,7 @@ Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>
 ### 场景 C：TUI 降级 + HITL 弹窗
 
 ```
-> java -jar target/paicli-1.0-SNAPSHOT.jar
+> java -jar target/m-cli-1.0-SNAPSHOT.jar
 [默认 CLI 模式]
 
 > /hitl on

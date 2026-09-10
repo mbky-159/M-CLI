@@ -18,7 +18,7 @@
 
 ## 1. 目标与产出物
 
-让 PaiCLI 拥有自己的 Skill 体系。Skill 是一个目录（含 `SKILL.md` + 可选 `references/` + 可选 `scripts/`），其中：
+让 M-CLI 拥有自己的 Skill 体系。Skill 是一个目录（含 `SKILL.md` + 可选 `references/` + 可选 `scripts/`），其中：
 
 - `SKILL.md` 是 Agent 的决策手册（哲学 + 工具选择表 + 优先级 + 兜底策略）
 - `references/` 是按需读取的资料库（典型用法：站点经验目录 `references/site-patterns/<domain>.md`）
@@ -58,7 +58,7 @@
 | 加载顺序 | jar 内置 < 用户级 `~/.paicli/skills/` < 项目级 `<project>/.paicli/skills/`（同名后者覆盖前者） |
 | 启用控制 | 默认启用；`~/.paicli/skills.json` 的 `disabled` 列表关掉 |
 | 系统提示词占位 | 启用后只把 `name` + `description` 进 system prompt（"轻量索引"） |
-| 完整指令展开 | LLM 调 `load_skill("name")` 后，PaiCLI 把 SKILL.md 正文（去 frontmatter）拼到 next user message 的开头 |
+| 完整指令展开 | LLM 调 `load_skill("name")` 后，M-CLI 把 SKILL.md 正文（去 frontmatter）拼到 next user message 的开头 |
 
 ### 2.2 SKILL.md 格式
 
@@ -69,7 +69,7 @@ description: |
   所有联网操作必须通过此 skill 处理，包括搜索、网页抓取、登录后操作。
   触发场景：用户要求搜索信息、查看网页、访问需登录站点、抓取社交媒体内容、读取动态渲染页面。
 version: "1.0.0"
-author: PaiCLI
+author: M-CLI
 tags: [web, browser, fetch]
 ---
 
@@ -111,7 +111,7 @@ tags: [web, browser, fetch]
 
 注入位置选 user message 而非 system，理由：
 - system prompt 在多轮对话里只发一次（节省 token），但本期 LLM 自决加载是**每轮可能不同**的
-- user message 是每轮重发，注入 body 会随轮次自然衰减（PaiCLI 控制只保留最近 1 轮的注入，避免堆积）
+- user message 是每轮重发，注入 body 会随轮次自然衰减（M-CLI 控制只保留最近 1 轮的注入，避免堆积）
 - system prompt 不变 → prompt cache 命中率高（第 12 期能力依赖）
 
 ---
@@ -200,7 +200,7 @@ frontmatter 用 SnakeYAML（项目已经依赖 Jackson + 不依赖 SnakeYAML，*
 - body 长度限 5KB，超出截断并附 `(skill body truncated, full content via /skill show <name>)`
 - **不直接返回正文给 LLM 当工具结果**，而是：
   - 工具结果只返回简短确认：`已加载 skill 'web-access' 的完整指引（X bytes），将在下一轮上下文中体现`
-  - 把 body 写入 `SkillContextBuffer`（per-session，per-agent-role），下一轮 user message 末尾被 PaiCLI 拼接
+  - 把 body 写入 `SkillContextBuffer`（per-session，per-agent-role），下一轮 user message 末尾被 M-CLI 拼接
 
 为什么这样设计：
 - 直接返回正文 → LLM 在当前轮就吃下，但工具结果通常被 LLM 当"事实输入"，不当"指令"
@@ -233,7 +233,7 @@ LLM 调 load_skill("web-access")
 - Jina 集成：**只**在 `SKILL.md` 写一段「web_fetch 拿不到正文时，可让 `execute_command` 调 `curl https://r.jina.ai/<url>` 取干净 markdown，限 20 RPM」——**不**改 web_fetch 工具
 
 **不做**：
-- **不**复制 `~/.claude/skills/web-access/scripts/cdp-proxy.mjs`（那是 568 行的 HTTP 代理，PaiCLI 第 13 / 14 期已经有 chrome-devtools MCP + shared 模式，能力等价，重写一个反而引入维护负担）
+- **不**复制 `~/.claude/skills/web-access/scripts/cdp-proxy.mjs`（那是 568 行的 HTTP 代理，M-CLI 第 13 / 14 期已经有 chrome-devtools MCP + shared 模式，能力等价，重写一个反而引入维护负担）
 - **不**写 `scripts/` 任何脚本（本期内置版 scripts/ 留空目录或干脆不建）
 - **不**预置 5KB 以上的超长 SKILL.md（决策手册要精炼，超长内容拆到 references/）
 - **不**抄用户本机 `~/.claude/skills/web-access/SKILL.md` 的具体文风（许可与立场不同，参考结构即可）
@@ -421,7 +421,7 @@ src/main/resources/skills/
 
 📚 Skills（3 个）
   ● web-access       builtin   v1.0.0  所有联网操作必须通过此 skill 处理...
-  ● paicli-internal  user      v0.2.0  PaiCLI 项目内部约定与文档导航...
+  ● paicli-internal  user      v0.2.0  M-CLI 项目内部约定与文档导航...
   ○ verbose-debug    project   v0.1.0  在每个工具调用前打印决策原因...
 
 提示：
@@ -466,7 +466,7 @@ version: "1.0.0"
 ## 已加载 Skill：web-access
 <SKILL.md body>
 ---
-用户输入：（PaiCLI 不重复用户原话，但 LLM 已有上下文）
+用户输入：（M-CLI 不重复用户原话，但 LLM 已有上下文）
 
 [LLM 按 web-access 指引：先试 web_fetch，失败 → 上 chrome-devtools MCP，take_snapshot 拿正文]
 ```
@@ -516,7 +516,7 @@ version: "1.0.0"
 
 **期望**：
 1. LLM 在第一轮调用 `load_skill("web-access")`
-2. PaiCLI 输出 `已加载 skill 'web-access'...`
+2. M-CLI 输出 `已加载 skill 'web-access'...`
 3. 下一轮按 web-access 指引：先 `web_fetch` 试 → 失败 → 上 `mcp__chrome-devtools__navigate_page` → `take_snapshot` 拿正文
 
 **验收点**：
@@ -542,7 +542,7 @@ version: "1.0.0"
 启用两个 skill：web-access 和 paicli-internal。让 LLM 完成跨域任务：
 
 ```
-> 看下 PaiCLI 项目的 ROADMAP.md，再去网上搜一下 LangGraph4J 最新版本
+> 看下 M-CLI 项目的 ROADMAP.md，再去网上搜一下 LangGraph4J 最新版本
 ```
 
 **期望**：LLM 加载 paicli-internal 处理 ROADMAP，加载 web-access 处理搜索；两个 skill body 都进 user message（按调用顺序拼接）。
@@ -587,7 +587,7 @@ body
 
 ### 7.8 启动期 builtin extractor
 
-清空 `~/.paicli/skills-cache/`，启动 PaiCLI：
+清空 `~/.paicli/skills-cache/`，启动 M-CLI：
 
 **期望**：自动重建 `~/.paicli/skills-cache/web-access/references/`，6 个 site-patterns 文件齐全，`.version` 文件存在。
 
@@ -624,7 +624,7 @@ body
 1. **frontmatter 手写解析的边界**：用户写 SKILL.md 时可能用各种 YAML 怪招（quoted string with colon、`>` 折叠、`---` 在 body 里）。Day 1 测试用例必须覆盖至少 6 种合法 + 3 种非法格式。
 2. **jar 内置 references 解压**：Windows 路径分隔符 / Linux mode bits / macOS 隐藏 `.DS_Store` 都可能搞砸 `Files.walk`。建议只解压 `*.md` 文件，其他忽略。
 3. **`load_skill` 描述写不好 LLM 不主动调**：description 字段必须明确写「当 system prompt 里某个 skill 的 description 看起来匹配时调用我」。Day 5 端到端必测 LLM 真的会主动调。如果 GLM-5.1 / DeepSeek V4 不主动调，回 Day 3 重写工具 description。
-4. **SkillContextBuffer 与流式输出竞态**：LLM 流式返回 tool_calls 时，PaiCLI 还没 flush 完上一轮 reasoning，就收到新一轮 user message——buffer drain 时机要在**新 user message 构造时**而不是上一轮 LLM 完成时，避免提前清空。
+4. **SkillContextBuffer 与流式输出竞态**：LLM 流式返回 tool_calls 时，M-CLI 还没 flush 完上一轮 reasoning，就收到新一轮 user message——buffer drain 时机要在**新 user message 构造时**而不是上一轮 LLM 完成时，避免提前清空。
 5. **三层目录覆盖语义**：用户级 SKILL.md 必须**完整覆盖**内置版（不是字段级 merge），避免出现"用户改了 description 但 references 还指向 builtin 缓存路径"的诡异状态。
 6. **builtin extractor 与多用户**：如果系统多用户共用 `~/.paicli`，extractor 写入要带文件锁。本期接受单用户假设，文档明示。
 7. **AgentOrchestrator 多个 SubAgent 同时 load_skill**：Worker × 2 同时各自调 load_skill 写入各自 buffer，无冲突；但 Reviewer 角色不应继承 Worker 的 buffer——三个角色各自独立 buffer。
@@ -700,7 +700,7 @@ body
 - 启动期 banner v15.0.0、标语、startup hint、skill 加载日志
 - **写真实的 web-access SKILL.md**（参考 `~/.claude/skills/web-access/SKILL.md` 结构与精神，**不抄具体内容**）：
   - 浏览哲学四步法（自己组织语言）
-  - 工具选择表（基于 PaiCLI 第 9 / 13 / 14 期能力）
+  - 工具选择表（基于 M-CLI 第 9 / 13 / 14 期能力）
   - 浏览器优先级（先 web_fetch → chrome-devtools isolated → /browser connect 切 shared）
   - Jina Reader 兜底说明（execute_command + curl r.jina.ai/）
   - 站点经验目录使用说明

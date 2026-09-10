@@ -56,13 +56,13 @@ public class BrowserGuard {
             if ("close_page".equals(localTool)
                     && !session.isAgentOpenedTab(pageId(args))) {
                 return BrowserCheckResult.block(
-                        "shared 浏览器模式下拒绝关闭非 PaiCLI 创建的标签页，请在 Chrome 中手动操作",
+                        "shared 浏览器模式下拒绝关闭非 M-CLI 创建的标签页，请在 Chrome 中手动操作",
                         metadata);
             }
             if (requiresAgentOwnedCurrentPage(localTool)
                     && !session.hasAgentOwnedCurrentPage()) {
                 return BrowserCheckResult.block(
-                        "shared 浏览器模式下当前标签页不是 PaiCLI 创建的页面；"
+                        "shared 浏览器模式下当前标签页不是 M-CLI 创建的页面；"
                                 + "请先用 new_page 打开目标 URL，不能导航或改写用户原有标签页",
                         metadata);
             }
@@ -155,12 +155,12 @@ public class BrowserGuard {
             if ("select_page".equals(localTool)) {
                 String selectedPageId = pageId(args);
                 return session.isAgentOpenedTab(selectedPageId)
-                        ? "已切换到 PaiCLI 创建的标签页 " + safePageId(selectedPageId) + "。"
+                        ? "已切换到 M-CLI 创建的标签页 " + safePageId(selectedPageId) + "。"
                         : "已切换到用户明确选择的共享标签页 " + safePageId(selectedPageId)
                                 + "（仅开放只读操作）。";
             }
             if ("close_page".equals(localTool)) {
-                return "已关闭 PaiCLI 创建的标签页 " + safePageId(pageId(args)) + "。";
+                return "已关闭 M-CLI 创建的标签页 " + safePageId(pageId(args)) + "。";
             }
         }
         return raw;

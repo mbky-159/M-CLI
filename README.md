@@ -1,4 +1,8 @@
-# PaiCLI
+# M-CLI
+
+产品由 PaiCLI 更名为 M-CLI，构建产物为 `target/m-cli-1.0-SNAPSHOT.jar`，启动界面使用 M 标识。为兼容已有安装，Java 包名 `com.paicli`、`PAICLI_*` 环境变量、`paicli.*` 系统属性、`.paicli` 数据目录、`PAI.md` 记忆文件及 `X-PaiCLI-API-Key` 请求头保持兼容。
+
+项目导读与部署入口见 [M-CLI 项目与部署说明](docs/m-cli-overview.md)。
 
 一个成熟的 Java Agent CLI 产品，对标 Claude Code 作者为沉默王二，从第一期的 `ReAct` 单代理循环逐步演进到第十六期的 `TUI 产品化`。
 
@@ -94,9 +98,9 @@ mvn test -DskipTests=false
 
 - `web_search` 抽象成 `SearchProvider` 接口，内置三个实现：智谱 Web Search（默认，与 GLM 共用 Key，0.01–0.05 元/次）、SerpAPI（国际通用付费）、SearXNG（开源自托管免费）
 - `web_fetch` 新工具：有可信来源的 URL → OkHttp 抓取 → Jsoup 解析 → 简易 readability → Markdown 正文
-- 联网不再对“最新/当前/今天/趋势/新闻/版本”等关键词做自动 freshness 预检。顶层用户输入只是标题、主题或摘录而没有任务目标时，PaiCLI 会先询问用户，本轮不调用工具；用户明确要求不要联网时始终优先遵从。
+- 联网不再对“最新/当前/今天/趋势/新闻/版本”等关键词做自动 freshness 预检。顶层用户输入只是标题、主题或摘录而没有任务目标时，M-CLI 会先询问用户，本轮不调用工具；用户明确要求不要联网时始终优先遵从。
 - 模型不得根据标题猜测 URL。明确要求查找但没有 URL 时先 `web_search`；`web_fetch` 和浏览器导航只接受用户实际提交的顶层原文（不含 `@path` / MCP resource 展开正文）中的 URL，或当前执行分支由搜索 provider 返回的结构化 `discoveredUrls`。搜索正文/snippet/query 回显/错误提示、`web_fetch` 正文、浏览器结果和普通文件/命令输出里的链接不会自动取得访问授权；StepSearch MCP 的非结构化结果文本也不会生成 URL 凭据。
-- 运行时 `TurnToolPolicy` 覆盖 ReAct / Plan / Team，并在 StepSearch、内置 Web provider 和 MCP / Chrome 路由之前校验顶层意图与 URL 来源；Plan 审阅补充会重建策略。并行任务/worker 不共享新发现的 URL，只有 DAG 中声明的后继依赖会继承前置分支的类型化 `web_search` URL 凭据，不从任务回复文本重新抽取。grounded URL 先只开放导航，成功导航只建立当前页读取上下文，页面读取不扩充 URL 授权；点击/填写等交互需顶层原文明确授权。shared Chrome 状态跨轮读取，非 PaiCLI 创建的标签页只在用户明确要求时开放只读，不能由 Agent 导航、改写或关闭；导航工具返回的全量标签页清单会在回灌模型前裁掉。被拒绝的调用不能靠切换工具绕过。
+- 运行时 `TurnToolPolicy` 覆盖 ReAct / Plan / Team，并在 StepSearch、内置 Web provider 和 MCP / Chrome 路由之前校验顶层意图与 URL 来源；Plan 审阅补充会重建策略。并行任务/worker 不共享新发现的 URL，只有 DAG 中声明的后继依赖会继承前置分支的类型化 `web_search` URL 凭据，不从任务回复文本重新抽取。grounded URL 先只开放导航，成功导航只建立当前页读取上下文，页面读取不扩充 URL 授权；点击/填写等交互需顶层原文明确授权。shared Chrome 状态跨轮读取，非 M-CLI 创建的标签页只在用户明确要求时开放只读，不能由 Agent 导航、改写或关闭；导航工具返回的全量标签页清单会在回灌模型前裁掉。被拒绝的调用不能靠切换工具绕过。
 - 当前模型是 `step-3.7-flash*` 且自动/显式 `step_search` 远程 server 已就绪时，通过 `TurnToolPolicy` 后的内置 `web_search` / `web_fetch` 会优先走 StepSearch MCP；未就绪或调用失败时自动回退到原 provider。
 - 默认安全策略：屏蔽 `file://` / 内网 / loopback；30 秒超时；5MB 响应上限；每分钟 30 次限流
 - 边界明确：SPA / 防爬墙站点会返回空正文 + 已知边界提示，Agent 会 fallback 到浏览器 MCP 路线
@@ -142,7 +146,7 @@ mvn test -DskipTests=false
 - Agent 遇到登录页、权限不足或明确需要登录态页面时，会先调用 `browser_connect` 自动切到 shared；公开页面如微信公众号文章不提前切换
 - `/browser connect <port>` 保留旧式 CDP 端口兼容路径：先探活 `127.0.0.1:<port>/json/version`，成功后切到 `--browser-url=http://127.0.0.1:<port>`；失败时不会改 MCP 启动参数，并输出 macOS / Windows / Linux 的 Chrome 启动命令
 - 切换 shared / isolated 模式都会清空 `chrome-devtools` 的 server 维度全部放行，避免旧信任跨模式延续
-- shared 模式下 `close_page` 只能关闭 PaiCLI 自己创建的 tab；无法证明是 PaiCLI 创建的 tab 会被策略层拒绝
+- shared 模式下 `close_page` 只能关闭 M-CLI 自己创建的 tab；无法证明是 M-CLI 创建的 tab 会被策略层拒绝
 - 敏感页面命中规则后，`click` / `fill_form` / `evaluate_script` 等改写型浏览器工具必须单步 HITL 审批，不复用全部放行；读型工具如 `take_snapshot` 仍可继续使用
 - 审计日志为 chrome-devtools 工具追加可选浏览器 metadata：`browser_mode`、`sensitive`、`target_url`，旧格式 JSONL 仍可读取
 
@@ -152,18 +156,18 @@ mvn test -DskipTests=false
 
 - 三层加载位置（按优先级，后者整体覆盖同名 skill）：jar 内置 < 用户级 `~/.paicli/skills/<name>/` < 项目级 `<project>/.paicli/skills/<name>/`
 - 启动期把启用 skill 的 `name` + `description` 注入三处 Agent 系统提示词索引段（启用上限 20 个，索引段 ≤ 4KB）
-- 内置工具 `load_skill(name)`：LLM 在 system prompt 看到匹配 description 时主动调用，PaiCLI 把 SKILL.md 正文（5KB 截断）写入 `SkillContextBuffer`，下一轮 user message 自动前置注入
+- 内置工具 `load_skill(name)`：LLM 在 system prompt 看到匹配 description 时主动调用，M-CLI 把 SKILL.md 正文（5KB 截断）写入 `SkillContextBuffer`，下一轮 user message 自动前置注入
 - 内置 web-access skill：决策手册（浏览哲学四步法 + 工具选择表 + 浏览器优先级 + Jina 兜底说明）+ 6 个站点经验文件（mp.weixin / zhuanlan.zhihu / x.com / xiaohongshu / github / juejin）+ cdp-cheatsheet
 - frontmatter 走手写 YAML 子集解析，不引 SnakeYAML；解析失败 stderr 警告但不阻塞启动
 - CLI 命令：`/skill list` / `/skill show <name>` / `/skill on <name>` / `/skill off <name>` / `/skill reload`
 - 启用状态持久化：`~/.paicli/skills.json` 的 `disabled` 列表，默认全启用
 - 与 HITL 协同：Skill 内调用 `execute_command` 等危险工具仍走既有 HITL 审批，沿用 `execute_command` 工具维度全放行；不给 Skill 单独审批维度
 
-设计意图：从「写工具」演进到「打包专家手册」。当工具堆成山（PaiCLI 当前内置 9 个 + MCP 60+ 工具），用 Skill 给 LLM 一份按场景展开的"专家手册"，比往 system prompt 里塞更多规则更可扩展。
+设计意图：从「写工具」演进到「打包专家手册」。当工具堆成山（M-CLI 当前内置 9 个 + MCP 60+ 工具），用 Skill 给 LLM 一份按场景展开的"专家手册"，比往 system prompt 里塞更多规则更可扩展。
 
 ### Better Harness 原生审计
 
-PaiCLI 内置 `better-harness` Skill 和 `/better-harness` 命令，用于审查编码 Agent 外层工作流，而不只是最终代码 diff。实现基于 QoderAI Better Harness 的 Agent Work Loop 方法，并针对 PaiCLI 的 Java 运行时、`ConversationLedger`、`PAI.md`、Skill、MCP 与 HITL 资产做了原生适配，不依赖 Node。
+M-CLI 内置 `better-harness` Skill 和 `/better-harness` 命令，用于审查编码 Agent 外层工作流，而不只是最终代码 diff。实现基于 QoderAI Better Harness 的 Agent Work Loop 方法，并针对 M-CLI 的 Java 运行时、`ConversationLedger`、`PAI.md`、Skill、MCP 与 HITL 资产做了原生适配，不依赖 Node。
 
 - `/better-harness` 或 `/better-harness normal`：正常深度审查，生成持久化报告
 - `/better-harness quick`：缩小项目摘录和候选 finding 上限，快速建立基线
@@ -171,7 +175,7 @@ PaiCLI 内置 `better-harness` Skill 和 `/better-harness` 命令，用于审查
 - 三路证据保持独立：当前会话脱敏元数据、Project Harness、Agent Customize
 - 三路 evidence specialist 并行运行且不暴露工具，lead 只基于三个结果做最终定级和归并
 - 运行期间展示 5 个确定性工作单元、三路审查完成数、当前阶段、累计耗时和 ESC 取消提示，不再用静态等待或估算进度冒充真实完成度
-- 终端报告统一经过 PaiCLI Markdown 渲染器，标题、强调、列表、表格和代码块按当前终端宽度显示，不直接打印 Markdown 源码标记
+- 终端报告统一经过 M-CLI Markdown 渲染器，标题、强调、列表、表格和代码块按当前终端宽度显示，不直接打印 Markdown 源码标记
 - 默认不读取消息正文、reasoning、工具参数/结果、Memory 正文、用户目录资产或其他 provider
 - 持久化输出位于 `.paicli/better-harness/<run-id>/`：`report.md`、`report.html`、`findings.json`
 - 一次报告只能证明当前机制和观测证据，不能单独证明工作流已经因修复而改善；效果需要后续可比较 Task Episode
@@ -188,7 +192,7 @@ v16.1 抽出 `Renderer` 接口 + 三个实现：
 
 | 形态 | 启用方式 | 视觉风格 |
 |---|---|---|
-| **inline 流式 TUI**（默认） | 直接运行 / `PAICLI_RENDERER=inline` | Claude Code / Qoder 风格：π 主题彩色开屏、主屏直出、transcript 当前位置的 `* ` 输入提示、JLine `Status` 托管的底部 dock（YOLO/HITL、MCP、Skill、model、ctx、token、cwd 等关键字段带克制彩色高亮；ctx 是当前上下文估算，in/out/cache 是调用统计）、右侧输入提示、行内可折叠工具块（`Read 3 files (ctrl+o to expand)`）、行内 git diff、HITL 单字符 `[y/n/a/s/m]` 提示 |
+| **inline 流式 TUI**（默认） | 直接运行 / `PAICLI_RENDERER=inline` | Claude Code / Qoder 风格：M 主题彩色开屏、主屏直出、transcript 当前位置的 `* ` 输入提示、JLine `Status` 托管的底部 dock（YOLO/HITL、MCP、Skill、model、ctx、token、cwd 等关键字段带克制彩色高亮；ctx 是当前上下文估算，in/out/cache 是调用统计）、右侧输入提示、行内可折叠工具块（`Read 3 files (ctrl+o to expand)`）、行内 git diff、HITL 单字符 `[y/n/a/s/m]` 提示 |
 | **lanterna 全屏 TUI** | `PAICLI_RENDERER=lanterna`（或兼容旧 `PAICLI_TUI=true`） | v16 三栏全屏：文件树 + 对话流 + 状态栏 + 底部输入栏，HITL 模态弹窗 |
 | **plain 兜底** | `PAICLI_RENDERER=plain` | 纯 println，无折叠 / 状态栏，等价 v15 行为 |
 
@@ -234,7 +238,7 @@ v16.1 抽出 `Renderer` 接口 + 三个实现：
 - 任务生命周期：`enqueued -> running -> completed / failed / canceled`
 - `/task`、`/task add <任务内容>`、`/task cancel <task_id>`、`/task log <task_id>` 提供 CLI 闭环
 - Worker Pool 默认 2 个后台 worker，可通过 `PAICLI_TASK_WORKERS` 调整
-- `java -jar target/paicli-1.0-SNAPSHOT.jar serve --http --port 8080` 启动 localhost Runtime API
+- `java -jar target/m-cli-1.0-SNAPSHOT.jar serve --http --port 8080` 启动 localhost Runtime API
 - Runtime API 端点：`POST /v1/threads`、`POST /v1/threads/{id}/turns`、`GET /v1/threads/{id}/events`
 - Runtime API 强制要求 `PAICLI_RUNTIME_API_KEY` 或 `-Dpaicli.runtime.api.key`
 - 详细文档见 `docs/phase-20-runtime-api.md`
@@ -256,12 +260,12 @@ v16.1 抽出 `Renderer` 接口 + 三个实现：
 ### 第二十三期：微信 iLink 通道（文本 MVP）
 
 - 新增进程级入口：`paicli wechat setup`、`paicli wechat start`、`paicli wechat status`、`paicli wechat daemon start|stop|restart|status|logs`
-- 新增交互式入口：在 PaiCLI 主界面输入 `/wechat` 可扫码绑定并在当前进程后台启动微信通道；`/wechat setup` 重新扫码绑定，`/wechat status` 查看状态，`/wechat stop` 停止通道
+- 新增交互式入口：在 M-CLI 主界面输入 `/wechat` 可扫码绑定并在当前进程后台启动微信通道；`/wechat setup` 重新扫码绑定，`/wechat status` 查看状态，`/wechat stop` 停止通道
 - 默认不开启微信通道；用户必须主动执行 `setup` 并扫码确认完成绑定
 - 支持在 Warp / iTerm2 / WezTerm 等兼容终端内直接显示 260px PNG 二维码；不支持终端图片协议时回退为字符二维码和链接
 - 微信侧使用 iLink `getupdates` 长轮询收消息、`sendmessage` 分片回消息，不依赖 SSE；这是独立通道，不是 Skill，也不是 Runtime API
 - 运行时只接受绑定用户私聊；普通消息单并发排队，`/help`、`/status`、`/pause`、`/resume`、`/stop` 走队列外控制路径
-- 微信侧用户消息会回显到 PaiCLI 终端 transcript；PaiCLI 终端继续显示 thinking / 工具调用过程，微信侧只接收 assistant 正文。iLink 协议层仍是 `text_item.text` 文本消息，没有显式 Markdown parse mode；PaiCLI 会保留 ClawBot 稳定支持的 Markdown 子集（列表、引用、粗体、行内代码、真实代码块），把标题转成粗体标题、把表格转成移动端更稳的键值/列表，并过滤图片 Markdown / H5-H6 / 中文斜体等兼容性差的标记；非代码类 fenced block（流程说明、长中文箭头链）会解包并换行，避免微信侧出现横向滚动代码块。iLink 不提供真正 SSE 或改单条消息能力。
+- 微信侧用户消息会回显到 M-CLI 终端 transcript；M-CLI 终端继续显示 thinking / 工具调用过程，微信侧只接收 assistant 正文。iLink 协议层仍是 `text_item.text` 文本消息，没有显式 Markdown parse mode；M-CLI 会保留 ClawBot 稳定支持的 Markdown 子集（列表、引用、粗体、行内代码、真实代码块），把标题转成粗体标题、把表格转成移动端更稳的键值/列表，并过滤图片 Markdown / H5-H6 / 中文斜体等兼容性差的标记；非代码类 fenced block（流程说明、长中文箭头链）会解包并换行，避免微信侧出现横向滚动代码块。iLink 不提供真正 SSE 或改单条消息能力。
 - 微信通道使用非交互式默认拒绝策略：只读工具默认允许，`write_file` / `create_project` 继续受 workspace PathGuard 限制，`execute_command` 必须精确命中命令白名单，`mcp__*` 必须命中 MCP 白名单，`revert_turn` 和浏览器会话切换默认拒绝
 - 当前文本 MVP 会保留图片 / 文件消息的媒体元数据提示，但 CDN 下载解密、图片块输入和 `/send` 文件推送仍待后续媒体链路补齐
 
@@ -275,7 +279,7 @@ v16.1 抽出 `Renderer` 接口 + 三个实现：
 - `write_file` 单文件 5MB 上限
 - CLI 命令：`/policy` 查看安全策略状态、`/audit [N]` 看最近 N 条审计
 
-**为什么不叫沙箱**：本地 Agent CLI（参考 Claude Code / Cursor / Aider）默认都不做容器/VM 沙箱——沙箱削弱 Agent 能力、给虚假安全感、体验更差。生产级 Agent 沙箱实际是 microVM-level（Devin / Modal / Anthropic Computer Use 用 Firecracker / gVisor）。PaiCLI 的安全模型是 **HITL + 路径校验 + 命令快速拒绝 + 审计**，不是隔离。
+**为什么不叫沙箱**：本地 Agent CLI（参考 Claude Code / Cursor / Aider）默认都不做容器/VM 沙箱——沙箱削弱 Agent 能力、给虚假安全感、体验更差。生产级 Agent 沙箱实际是 microVM-level（Devin / Modal / Anthropic Computer Use 用 Firecracker / gVisor）。M-CLI 的安全模型是 **HITL + 路径校验 + 命令快速拒绝 + 审计**，不是隔离。
 
 ## 启动界面
 
@@ -284,11 +288,11 @@ v16.1 抽出 `Renderer` 接口 + 三个实现：
 当前启动输出以命令行实际产物为准：
 
 ```text
-   ████████    PaiCLI π  v16.1.0
-     ██  ██    Model step-3.5-flash-2603 (step)
-     ██  ██    MCP 4/4 · 61 tools · 2/2 skills · ReAct
-     ██  ██    ReAct · Plan · MCP · Browser · Image
-     ██  ██
+   ██      ██    M-CLI  v16.1.0
+   ██      ██    Model step-3.5-flash-2603 (step)
+   ██      ██    MCP 4/4 · 61 tools · 2/2 skills · ReAct
+   ██      ██    ReAct · Plan · MCP · Browser · Image
+   ██      ██
 
 Tips for getting started:
 1. Type / for commands and Tab completion
@@ -403,7 +407,7 @@ export AGNES_MODEL=agnes-2.0-flash
 export AGNES_BASE_URL=https://apihub.agnes-ai.com/v1
 ```
 
-也可以在 PaiCLI 内用命令写入 `~/.paicli/config.json`，不会覆盖 Kimi 配置：
+也可以在 M-CLI 内用命令写入 `~/.paicli/config.json`，不会覆盖 Kimi 配置：
 
 ```text
 /config provider freellmapi --base-url http://localhost:5173/v1 --api-key <key> --model auto
@@ -433,10 +437,10 @@ ReAct / Plan task / SubAgent / Planner 的模型 `reasoning_content` 会以 `LLM
 
 ```bash
 # 指定记忆目录
-java -Dpaicli.memory.dir=/tmp/paicli-memory -jar target/paicli-1.0-SNAPSHOT.jar
+java -Dpaicli.memory.dir=/tmp/paicli-memory -jar target/m-cli-1.0-SNAPSHOT.jar
 
 # 指定 RAG 索引目录
-java -Dpaicli.rag.dir=/tmp/paicli-rag -jar target/paicli-1.0-SNAPSHOT.jar
+java -Dpaicli.rag.dir=/tmp/paicli-rag -jar target/m-cli-1.0-SNAPSHOT.jar
 
 # 指定日志目录与保留策略
 java -Dpaicli.log.dir=/tmp/paicli-logs \
@@ -444,7 +448,7 @@ java -Dpaicli.log.dir=/tmp/paicli-logs \
      -Dpaicli.log.maxHistory=3 \
      -Dpaicli.log.maxFileSize=5MB \
      -Dpaicli.log.totalSizeCap=20MB \
-     -jar target/paicli-1.0-SNAPSHOT.jar
+     -jar target/m-cli-1.0-SNAPSHOT.jar
 ```
 
 也可以放到 `.env` 或环境变量中：
@@ -459,7 +463,7 @@ PAICLI_LOG_TOTAL_SIZE_CAP=100MB
 
 ### 2. 可选：配置 MCP server
 
-MCP 子系统默认开启。`~/.paicli/mcp.json` 不存在时，PaiCLI 会自动创建默认 chrome-devtools 配置：
+MCP 子系统默认开启。`~/.paicli/mcp.json` 不存在时，M-CLI 会自动创建默认 chrome-devtools 配置：
 
 ```json
 {
@@ -499,7 +503,7 @@ MCP 子系统默认开启。`~/.paicli/mcp.json` 不存在时，PaiCLI 会自动
 
 `command` 表示 stdio server，`url` 表示 Streamable HTTP server。`${PROJECT_DIR}` / `${HOME}` 是内置变量，其他 `${VAR}` 从环境变量读取；缺失会在启动时直接提示。
 
-`step_search` 是约定名称：如果项目 `.env`、用户 `~/.env` 或系统环境变量里存在 `STEP_API_KEY`，PaiCLI 会自动内置这个远程 MCP；上面的手写配置只用于覆盖默认地址或自定义鉴权。当前模型为 `step-3.7-flash*` 时，内置 `web_search` / `web_fetch` 会优先代理到该 MCP server。
+`step_search` 是约定名称：如果项目 `.env`、用户 `~/.env` 或系统环境变量里存在 `STEP_API_KEY`，M-CLI 会自动内置这个远程 MCP；上面的手写配置只用于覆盖默认地址或自定义鉴权。当前模型为 `step-3.7-flash*` 时，内置 `web_search` / `web_fetch` 会优先代理到该 MCP server。
 
 需要复用当前登录态时，Chrome 144+ 推荐打开 `chrome://inspect/#remote-debugging` 并勾选 `Allow remote debugging for this browser instance`。旧版本或需要显式 CDP 端口时，可以启动带远程调试端口和独立 user-data-dir 的 Chrome，并在这个调试 Chrome 中完成登录：
 
@@ -514,7 +518,7 @@ start chrome.exe --remote-debugging-port=9222 --user-data-dir=%TEMP%\paicli-chro
 google-chrome --remote-debugging-port=9222 --user-data-dir=/tmp/paicli-chrome-profile
 ```
 
-通常不需要用户预先切换；Agent 如果遇到登录页会自己调用 `browser_connect`。手工调试时也可以在 PaiCLI 内执行：
+通常不需要用户预先切换；Agent 如果遇到登录页会自己调用 `browser_connect`。手工调试时也可以在 M-CLI 内执行：
 
 ```text
 /browser status
@@ -560,7 +564,7 @@ OAuth 和 `sampling/createMessage` 当前未实现；远程 server 需要鉴权�
 mvn clean package
 
 # 运行（需要本地 Ollama 已启动且拉取了 nomic-embed-text；grep_code 会优先使用本机 ripgrep，未安装时自动回退）
-java -jar target/paicli-1.0-SNAPSHOT.jar
+java -jar target/m-cli-1.0-SNAPSHOT.jar
 ```
 
 或者直接运行：
@@ -664,7 +668,7 @@ I
 - `mcp__{server}__{tool}` - MCP server 动态提供的外部工具
 - `mcp__{server}__list_resources` / `mcp__{server}__read_resource` - 支持 resources 的 MCP server 自动注册的虚拟工具
 
-同一轮模型返回多个工具调用时，PaiCLI 会并行执行这些工具；如果工具之间有依赖关系，模型应分多轮调用。
+同一轮模型返回多个工具调用时，M-CLI 会并行执行这些工具；如果工具之间有依赖关系，模型应分多轮调用。
 
 文件类与代码检索工具（`read_file` / `write_file` / `list_dir` / `glob_files` / `grep_code` / `create_project`）路径强制限定在项目根之内，越界请求会被策略层拒绝；`execute_command` 通过命令黑名单拦截 `sudo` / `rm -rf 全盘` / `mkfs` / `dd of=/dev` / fork bomb / `curl|sh` 等。`revert_turn` 会批量回写工作区，默认触发 HITL 和审计。所有 `mcp__` 前缀工具默认触发 HITL 和审计。详见 `/policy`。
 
@@ -681,8 +685,8 @@ I
 
 - `/wechat` - 扫码绑定并启动微信 iLink 通道；已绑定时直接启动
 - `/wechat setup` - 重新扫码绑定并启动微信通道
-- `/wechat status` - 查看当前 PaiCLI 进程内微信通道状态
-- `/wechat stop` - 停止当前 PaiCLI 进程内微信通道
+- `/wechat status` - 查看当前 M-CLI 进程内微信通道状态
+- `/wechat stop` - 停止当前 M-CLI 进程内微信通道
 - `/plan` - 下一条任务使用 Plan-and-Execute 模式
 - `/plan <任务>` - 直接用 Plan-and-Execute 模式执行这条任务
 - `/team` - 下一条任务使用 Multi-Agent 协作模式
@@ -742,11 +746,11 @@ I
 ### 第三期：当前运行效果
 
 ```text
-   ████████    PaiCLI π  v16.1.0
-     ██  ██    Model glm-5.1 (glm)
-     ██  ██    MCP 4/4 · 61 tools · 2/2 skills · ReAct
-     ██  ██    ReAct · Plan · MCP · Browser · Image
-     ██  ██
+   ██      ██    M-CLI  v16.1.0
+   ██      ██    Model glm-5.1 (glm)
+   ██      ██    MCP 4/4 · 61 tools · 2/2 skills · ReAct
+   ██      ██    ReAct · Plan · MCP · Browser · Image
+   ██      ██
 
 Tips for getting started:
 1. Type / for commands and Tab completion

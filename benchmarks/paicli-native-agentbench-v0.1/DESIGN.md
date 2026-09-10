@@ -1,4 +1,4 @@
-# PaiCLI Native AgentBench v0.1 设计
+# M-CLI Native AgentBench v0.1 设计
 
 ## 状态与范围
 
@@ -6,17 +6,17 @@
 - 当前状态：`planned`
 - 计分集：28 个任务蓝图，合计 100 分
 - 难度结构：L1 基础闭环 40 分、L2 组合 Agent 36 分、L3 长程/对抗 24 分
-- 对比对象：同一 PaiCLI 版本分别搭载 DeepSeek V4 Flash、Hy4 preview、GLM-5.3-Flash
+- 对比对象：同一 M-CLI 版本分别搭载 DeepSeek V4 Flash、Hy4 preview、GLM-5.3-Flash
 - 本目录当前只定义协议和机器可读蓝图，不包含 fixture、参考答案、隐藏测试、Runner 或真实跑分结果
 
-本套件评测的是“模型在 PaiCLI Harness 中完成真实 Agent 任务的能力”，不是裸模型知识榜，也不宣称复现任何外部 benchmark。外部 benchmark 只提供方法启发：真实仓库修复、终端 end state、干扰工具与跨服务组合、长程任务、安全验证和原创推理。具体外部版本、题数和公开分数不属于本设计，未经官方核实不得写入结果报告。
+本套件评测的是“模型在 M-CLI Harness 中完成真实 Agent 任务的能力”，不是裸模型知识榜，也不宣称复现任何外部 benchmark。外部 benchmark 只提供方法启发：真实仓库修复、终端 end state、干扰工具与跨服务组合、长程任务、安全验证和原创推理。具体外部版本、题数和公开分数不属于本设计，未经官方核实不得写入结果报告。
 
 ## 设计目标
 
-1. 覆盖 PaiCLI 已交付的 ReAct、Plan+DAG、Multi-Agent、代码搜索、终端、MCP、Web/Browser、长上下文、压缩和安全策略。
+1. 覆盖 M-CLI 已交付的 ReAct、Plan+DAG、Multi-Agent、代码搜索、终端、MCP、Web/Browser、长上下文、压缩和安全策略。
 2. 以可执行验证器为主，语义 Judge 为辅；确定性事实不交给 LLM 猜。
 3. 让核心题与产品当前定位匹配，同时用独立 L3 压力层暴露长程和对抗边界。
-4. 三个模型使用同一 PaiCLI commit、任务、工具、预算和隔离环境，结果可复核。
+4. 三个模型使用同一 M-CLI commit、任务、工具、预算和隔离环境，结果可复核。
 5. 数据集冻结前允许在 sibling dev 题上迭代；冻结后禁止根据 final 分数删题、改权重或降低门槛。
 
 ## 非目标
@@ -65,7 +65,7 @@
 
 ## 任务蓝图
 
-`mode` 只表示 PaiCLI 主执行路径：`react`、`plan` 或 `team`。Web、Browser、MCP 和压缩能力由任务允许的工具与输入触发，不另造执行模式。
+`mode` 只表示 M-CLI 主执行路径：`react`、`plan` 或 `team`。Web、Browser、MCP 和压缩能力由任务允许的工具与输入触发，不另造执行模式。
 
 | ID | 层级 | 模式 | 任务 | 核心验收 | 权重 |
 |---|---|---|---|---|---:|
@@ -151,7 +151,7 @@ category_score(C) = Σ(C task_weight × case_score / 100) / Σ(C task_weight) ×
 - 三次独立新会话的均值、标准差和每题稳定性；
 - hard gate 违规率；
 - token、缓存 token、墙钟时间、成本和工具调用数；
-- 与上一 PaiCLI 稳定版的盲化 Pairwise Win/Tie/Loss 和位置一致率。
+- 与上一 M-CLI 稳定版的盲化 Pairwise Win/Tie/Loss 和位置一致率。
 
 禁止用 best-of-3、删掉失败题后的均分或只展示最佳模型来替代正式总分。
 
@@ -159,7 +159,7 @@ category_score(C) = Σ(C task_weight × case_score / 100) / Σ(C task_weight) ×
 
 1. 每个模型先通过不计分 preflight：真实 API model ID、流式结束、单/多轮 tool call、工具结果回灌、usage、上下文上限和重试行为。
 2. Hy4 必须使用经过验证的 provider adapter；不得只改展示名称。GLM 和 DeepSeek 同样记录请求模型与服务端解析模型。
-3. 三模型使用相同 PaiCLI commit、干净度、system prompt digest、ToolRegistry digest、fixture digest、verifier digest、模式、超时、工具调用预算和 final case 顺序。
+3. 三模型使用相同 M-CLI commit、干净度、system prompt digest、ToolRegistry digest、fixture digest、verifier digest、模式、超时、工具调用预算和 final case 顺序。
 4. 除协议兼容所必需的 adapter 外，不允许 provider 专属提示词、工具删减、任务改写或额外重试。
 5. 若不能统一 temperature、seed 或最大输出参数，必须在证据中记录“provider default/unknown”，不能声称同采样参数。
 6. 每个 final case 每模型运行三次，均使用全新 workspace、user home、会话、长期记忆、MCP 状态和 mock 数据快照；正式成绩取三次平均，不取最高分。
@@ -204,9 +204,9 @@ category_score(C) = Σ(C task_weight × case_score / 100) / Σ(C task_weight) ×
 - L2 归一化分不低于 65；
 - overall score 不低于 70；
 - L3 无最低发布门槛，但必须完整展示，不得从 overall 删除；
-- 所有类别、失败 case、模型 API ID、PaiCLI commit、预算、Judge 信息和成本字段完整。
+- 所有类别、失败 case、模型 API ID、M-CLI commit、预算、Judge 信息和成本字段完整。
 
-若某模型未达门槛，先按失败证据修复 PaiCLI 或 adapter，再以新 PaiCLI commit 对三个模型完整重跑。旧报告保留为历史证据，不能覆盖。
+若某模型未达门槛，先按失败证据修复 M-CLI 或 adapter，再以新 M-CLI commit 对三个模型完整重跑。旧报告保留为历史证据，不能覆盖。
 
 ## 运行证据
 
@@ -214,7 +214,7 @@ category_score(C) = Σ(C task_weight × case_score / 100) / Σ(C task_weight) ×
 
 - 套件、数据集、Rubric、Runner 和任务版本；
 - run/case/variant/split 标识与开始、结束、耗时；
-- PaiCLI commit、dirty 状态、system prompt 与工具注册表 digest；
+- M-CLI commit、dirty 状态、system prompt 与工具注册表 digest；
 - provider、请求模型、服务端解析模型、adapter 与无密钥 endpoint fingerprint；
 - 上下文、采样、超时、轮次和工具预算；
 - fixture、容器、mock 状态和 verifier digest；
