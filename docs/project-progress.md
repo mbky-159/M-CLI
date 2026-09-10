@@ -4,7 +4,7 @@
 
 ## 当前状态
 
-- 云端 CLI 已进入基础准备：增加离线 gVisor 实验配置、可选 MySQL/Redis、策略校验、单用户预发布服务和带健康检查/回滚的自动发布流水线；已购轻量服务器，SSH 密钥、服务器初始化、用户鉴权、持久租户沙箱、云端调度和 Linux 运行验收尚未完成。见 [设计与实施顺序](cloud-cli-design.md)。
+- 云端 CLI 基础环境已完成运行验收：新加坡轻量服务器已初始化，单用户 Runtime API 由 systemd 托管并保持 loopback-only，Docker/gVisor 沙箱动态探针通过；可选 MySQL/Redis 保留配置但未启动。GitHub Actions 工作流已准备，仓库 Secrets 与部署开关仍待配置；用户鉴权、持久租户沙箱和云端调度尚未完成。见 [设计与实施顺序](cloud-cli-design.md)。
 
 - 已推进至第 23 期微信 iLink 文本通道 MVP；各模块完成度和后续边界见下文。
 - 2026-09-10：产品由 PaiCLI 更名为 M-CLI，更新启动标识、提示词、文档和 JAR 名称，保留原有配置兼容性。
