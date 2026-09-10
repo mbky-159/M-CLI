@@ -1,0 +1,91 @@
+name: m-cli-lab
+
+services:
+  # Explicitly opt in; this is an offline isolation lab, not a public API.
+  sandbox:
+    profiles: [sandbox]
+    image: m-cli-sandbox:lab
+    build:
+      context: ./sandbox
+    runtime: runsc
+    user: "10001:10001"
+    network_mode: none
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    cpus: 1.0
+    mem_limit: 1536m
+    memswap_limit: 1536m
+    pids_limit: 128
+    ulimits:
+      nofile:
+        soft: 1024
+        hard: 1024
+    tmpfs:
+      - /tmp:rw,nosuid,nodev,size=134217728,uid=10001,gid=10001,mode=1777
+      - /workspace:rw,nosuid,nodev,size=268435456,uid=10001,gid=10001,mode=0700
+      - /home/sandbox:rw,nosuid,nodev,size=134217728,uid=10001,gid=10001,mode=0700
+    logging:
+      driver: local
+      options:
+        max-size: 5m
+        max-file: "2"
+    stdin_open: true
+    tty: true
+    restart: "no"
+
+  # Reserved platform infrastructure; M-CLI still uses SQLite today.
+  mysql:
+    profiles: [middleware]
+    image: mysql:8.4
+    environment:
+      MYSQL_DATABASE: mcli
+      MYSQL_USER: mcli
+      MYSQL_PASSWORD_FILE: /run/secrets/mysql_password
+      MYSQL_ROOT_PASSWORD_FILE: /run/secrets/mysql_root_password
+    secrets: [mysql_password, mysql_root_password]
+    command: ["--innodb-buffer-pool-size=268435456", "--max-connections=30"]
+    volumes: [mysql_data:/var/lib/mysql]
+    networks: [backend]
+    cpus: 1.0
+    mem_limit: 1024m
+    memswap_limit: 1024m
+    pids_limit: 128
+    security_opt: [no-new-privileges:true]
+    restart: unless-stopped
+    logging:
+      driver: local
+      options: {max-size: 10m, max-file: "3"}
+
+  redis:
+    profiles: [middleware]
+    image: redis:7.4-alpine
+    command: ["redis-server", "/run/secrets/redis_config"]
+    secrets: [redis_config]
+    volumes: [redis_data:/data]
+    networks: [backend]
+    cpus: 0.5
+    mem_limit: 256m
+    memswap_limit: 256m
+    pids_limit: 64
+    security_opt: [no-new-privileges:true]
+    restart: unless-stopped
+    logging:
+      driver: local
+      options: {max-size: 5m, max-file: "2"}
+
+networks:
+  backend:
+    internal: true
+
+volumes:
+  mysql_data:
+  redis_data:
+
+secrets:
+  mysql_password:
+    file: ./secrets/mysql_password
+  mysql_root_password:
+    file: ./secrets/mysql_root_password
+  redis_config:
+    file: ./secrets/redis.conf

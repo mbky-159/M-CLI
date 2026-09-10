@@ -178,6 +178,8 @@ API Key、`.env`、会话导出和原始账本可能含敏感信息，请勿提�
 
 ## 开发与项目资料
 
+准备云端 CLI 与独立用户沙箱时，先看 [云端架构与建设步骤](docs/cloud-cli-design.md)和[部署实验说明](deploy/README.md)。目前提供隔离实验配置，尚未开放多用户服务。
+
 ```sh
 mvn test -Pquick
 mvn test -Pphase16-smoke

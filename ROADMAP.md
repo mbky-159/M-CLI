@@ -2,6 +2,8 @@
 
 从零开始，逐步构建生产级 Java Agent CLI
 
+新增建设方向：本地 CLI 连接云端 API，每用户独立沙箱。已准备离线实验配置与部署校验，租户鉴权、持久工作区、受控网络、worker 调度和自动发布仍待实现。阶段顺序与验收标准见 [云端 CLI 设计](docs/cloud-cli-design.md)。
+
 ---
 
 ## 第1期：基础ReAct + Tool Call ✅

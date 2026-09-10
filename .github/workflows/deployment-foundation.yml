@@ -1,0 +1,27 @@
+name: Deployment foundation
+
+on:
+  pull_request:
+    paths: ['deploy/**', '.github/workflows/deployment-foundation.yml']
+  push:
+    branches: [master]
+    paths: ['deploy/**', '.github/workflows/deployment-foundation.yml']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check rendered policy
+        run: python3 deploy/check_sandbox.py
+      - name: Test isolation policy regressions
+        run: python3 -m unittest discover -s deploy -p test_sandbox_policy.py -v
+      - name: Build lab image
+        run: docker compose -f deploy/compose.yaml --profile sandbox build sandbox
+      # Hosted runner does not provide our production runsc installation.
+      # Actual runtime acceptance is performed on the target Linux worker.

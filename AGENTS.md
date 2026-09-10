@@ -244,6 +244,8 @@ src/main/java/com/paicli/
 
 ## 当前已知边界
 
+云端 CLI 以本地终端连接云端 API 为目标，设计见 `docs/cloud-cli-design.md`，实验环境见 `deploy/README.md`。`deploy/compose.yaml` 仅是默认断网的 gVisor 实验及可选中间件，不是已经接入 Runtime API 的租户沙箱。不得将共享 Key/共享 cwd 的现有 Runtime API 直接对外开放；沙箱启动失败不得回退宿主机执行。MySQL/Redis 尚未接入 Java，MinIO 不作为默认生产镜像。
+
 以下在路线图但未交付：容器/VM 沙箱 / MCP OAuth + sampling + server 自动重启
 
 不要把 `ROADMAP.md` 中"将来要做"误读成"现在已有"。

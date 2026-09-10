@@ -22,3 +22,7 @@ target/
 Thumbs.db
 /reports
 temp_articles.json
+
+# Local deployment credentials
+/deploy/secrets/
+__pycache__/
