@@ -1,6 +1,6 @@
 # AGENTS.md
 
-仓库给 Agent / 新线程使用的首读入口。详细行为描述见 `docs/agents-reference.md`。
+仓库给 Agent / 新线程使用的首读入口。详细行为描述见 `docs/agents-reference.md`。`README.md` 聚焦使用方式，分期建设记录集中在 `docs/project-progress.md`，未来规划仍放在 `ROADMAP.md`。
 
 ## 信息优先级
 
