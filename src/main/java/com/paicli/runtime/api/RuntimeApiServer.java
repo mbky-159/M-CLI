@@ -34,6 +34,7 @@ public class RuntimeApiServer implements AutoCloseable {
         this.runner = runner;
         this.apiKey = apiKey;
         this.server = HttpServer.create(new InetSocketAddress("127.0.0.1", port), 0);
+        this.server.createContext("/healthz", this::handleHealth);
         this.server.createContext("/v1/threads", this::handleThreads);
         this.server.setExecutor(executor);
     }
@@ -52,6 +53,15 @@ public class RuntimeApiServer implements AutoCloseable {
 
     public int port() {
         return server.getAddress().getPort();
+    }
+
+    private void handleHealth(HttpExchange exchange) throws IOException {
+        if (!"GET".equals(exchange.getRequestMethod())) {
+            exchange.getResponseHeaders().set("Allow", "GET");
+            writeJson(exchange, 405, "{\"error\":\"method_not_allowed\"}");
+            return;
+        }
+        writeJson(exchange, 200, "{\"status\":\"ok\"}");
     }
 
     private void handleThreads(HttpExchange exchange) throws IOException {

@@ -15,6 +15,25 @@ import static org.junit.jupiter.api.Assertions.*;
 class RuntimeApiServerTest {
 
     @Test
+    void exposesUnauthenticatedHealthCheck(@TempDir Path tempDir) throws Exception {
+        try (RuntimeThreadStore store = new RuntimeThreadStore(tempDir.resolve("runtime.db"));
+             RuntimeApiServer server = new RuntimeApiServer(store, prompt -> "x", 0, "secret")) {
+            server.start();
+            HttpClient client = HttpClient.newHttpClient();
+            HttpRequest request = HttpRequest.newBuilder(
+                            URI.create("http://127.0.0.1:" + server.port() + "/healthz"))
+                    .GET()
+                    .timeout(Duration.ofSeconds(3))
+                    .build();
+
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+            assertEquals(200, response.statusCode());
+            assertEquals("{\"status\":\"ok\"}", response.body());
+        }
+    }
+
+    @Test
     void exposesThreadTurnAndSseEvents(@TempDir Path tempDir) throws Exception {
         try (RuntimeThreadStore store = new RuntimeThreadStore(tempDir.resolve("runtime.db"));
              RuntimeApiServer server = new RuntimeApiServer(store, prompt -> "reply:" + prompt, 0, "secret")) {

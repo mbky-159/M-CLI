@@ -46,6 +46,7 @@ java -jar target/m-cli-1.0-SNAPSHOT.jar serve --http --port 8080
 - `POST /v1/threads`：创建 thread
 - `POST /v1/threads/{id}/turns`：提交一轮 Agent 输入，异步执行
 - `GET /v1/threads/{id}/events`：以 SSE 格式回放事件
+- `GET /healthz`：供本机服务管理器和发布流水线做无认证存活检查，不返回业务数据
 
 事件类型：
 

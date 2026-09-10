@@ -1,0 +1,81 @@
+name: Release staging
+
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: m-cli-staging
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: maven
+      - name: Runtime API regression tests
+        run: mvn test -Dtest=RuntimeApiServerTest -DskipTests=false
+      - name: Validate deployment policy
+        run: |
+          python3 deploy/check_sandbox.py
+          python3 -m unittest discover -s deploy -p test_sandbox_policy.py -v
+      - name: Package
+        run: mvn package
+      - name: Stage immutable artifact
+        run: |
+          mkdir release
+          cp target/m-cli-1.0-SNAPSHOT.jar release/m-cli.jar
+          sha256sum release/m-cli.jar > release/m-cli.jar.sha256
+      - uses: actions/upload-artifact@v4
+        with:
+          name: m-cli-${{ github.sha }}
+          path: release/
+          if-no-files-found: error
+          retention-days: 14
+
+  deploy:
+    if: vars.STAGING_DEPLOY_ENABLED == 'true'
+    needs: build
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    environment: staging
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: m-cli-${{ github.sha }}
+          path: release
+      - name: Configure SSH
+        env:
+          DEPLOY_KEY: ${{ secrets.STAGING_SSH_PRIVATE_KEY }}
+          KNOWN_HOSTS: ${{ secrets.STAGING_SSH_KNOWN_HOSTS }}
+        run: |
+          test -n "$DEPLOY_KEY"
+          test -n "$KNOWN_HOSTS"
+          install -d -m 0700 ~/.ssh
+          printf '%s\n' "$DEPLOY_KEY" > ~/.ssh/id_ed25519
+          chmod 0600 ~/.ssh/id_ed25519
+          printf '%s\n' "$KNOWN_HOSTS" > ~/.ssh/known_hosts
+          chmod 0600 ~/.ssh/known_hosts
+      - name: Upload and release
+        env:
+          DEPLOY_HOST: ${{ secrets.STAGING_HOST }}
+          DEPLOY_USER: ${{ secrets.STAGING_USER }}
+        run: |
+          test -n "$DEPLOY_HOST"
+          test -n "$DEPLOY_USER"
+          artifact_sha=$(sha256sum release/m-cli.jar | awk '{print $1}')
+          remote_jar="/tmp/m-cli-upload-${GITHUB_SHA}.jar"
+          scp -o BatchMode=yes release/m-cli.jar "${DEPLOY_USER}@${DEPLOY_HOST}:${remote_jar}"
+          ssh -o BatchMode=yes "${DEPLOY_USER}@${DEPLOY_HOST}" \
+            "sudo /usr/local/sbin/m-cli-release '${remote_jar}' '${GITHUB_SHA}' '${artifact_sha}'"

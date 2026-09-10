@@ -57,3 +57,34 @@ MinIO 仅预留需求，不启动已归档项目的旧镜像。对象存储候�
 - 当前镜像标签用于实验；上线前选择维护版本、固定已扫描镜像 digest 并建立更新流程。
 - 完成用户鉴权、资源归属、磁盘硬配额、受控网络、模型代理、任务调度和完整隔离测试。
 - 配置实际部署流水线的镜像仓库与服务器凭据；本次 CI 仅校验与构建实验镜像，不部署任何服务器。
+
+## 单用户预发布与自动发布
+
+当前预发布服务仍使用单个 API Key，并固定监听服务器的 `127.0.0.1:8080`。初始化 Ubuntu 24.04 服务器：
+
+```sh
+git clone https://github.com/mbky-159/M-CLI.git
+cd M-CLI
+sudo bash deploy/server/bootstrap-ubuntu.sh
+sudoedit /etc/m-cli/m-cli.env
+```
+
+在环境文件中配置一个模型 Key，并将 `PAICLI_RUNTIME_API_KEY` 换成随机长值。启动前仍需先发布一个 JAR；发布脚本校验 SHA-256、创建不可变 release 目录、切换 `current` 符号链接并请求 `GET /healthz`，失败时恢复上一版本。
+
+GitHub 仓库的 `staging` Environment 需要以下 Secrets：
+
+- `STAGING_HOST`：服务器公网 IP 或域名。
+- `STAGING_USER`：固定填写初始化脚本创建的 `mcli-deploy`；该用户只允许通过 `sudo` 调用服务器上由 root 安装的发布脚本。
+- `STAGING_SSH_PRIVATE_KEY`：专用部署密钥，不复用个人管理密钥。
+- `STAGING_SSH_KNOWN_HOSTS`：管理员在可信渠道核对后的服务器 host key 记录。
+
+确认服务器初始化和 Secrets 均完成后，再将仓库变量 `STAGING_DEPLOY_ENABLED` 设为 `true`。此前每次推送只构建和上传 JAR artifact，部署 job 会跳过。合并到 `master` 后同一时间只运行一个发布，健康检查失败自动回滚。
+
+本机通过 SSH 隧道访问预发布 API：
+
+```sh
+ssh -N -L 8080:127.0.0.1:8080 <admin-user>@<server-ip>
+curl http://127.0.0.1:8080/healthz
+```
+
+不要为此在轻量服务器防火墙开放 8080。域名、HTTPS、多用户 token 和租户沙箱调度完成前，不开放公网 API。

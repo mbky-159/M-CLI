@@ -1,0 +1,29 @@
+[Unit]
+Description=M-CLI single-user staging Runtime API
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=mcli
+Group=mcli
+WorkingDirectory=/var/lib/m-cli/workspace
+EnvironmentFile=/etc/m-cli/m-cli.env
+ExecStart=/usr/bin/java -XX:MaxRAMPercentage=25 -jar /opt/m-cli/current/m-cli.jar serve --http --port 8080
+Restart=on-failure
+RestartSec=5
+TimeoutStopSec=30
+NoNewPrivileges=true
+PrivateTmp=true
+PrivateDevices=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/m-cli
+RestrictSUIDSGID=true
+LockPersonality=true
+RestrictRealtime=true
+SystemCallArchitectures=native
+UMask=0077
+
+[Install]
+WantedBy=multi-user.target

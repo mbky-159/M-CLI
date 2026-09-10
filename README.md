@@ -156,6 +156,8 @@ java -jar target/m-cli-1.0-SNAPSHOT.jar serve --http --port 8080
 
 服务监听 `127.0.0.1:8080`，请求需携带 `Authorization: Bearer <PAICLI_RUNTIME_API_KEY>`。
 
+`GET /healthz` 用于本机服务健康检查，不需要认证；业务端点仍需 API Key。该接口不代表当前 Runtime API 已具备多租户公网服务能力。
+
 | 接口 | 用途 |
 |---|---|
 | `POST /v1/threads` | 创建会话 |
