@@ -87,4 +87,10 @@ ssh -N -L 8080:127.0.0.1:8080 <admin-user>@<server-ip>
 curl http://127.0.0.1:8080/healthz
 ```
 
+Windows 管理员可用仓库内的交互客户端一次完成隧道、UTF-8 请求和回答渲染：
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\deploy\client\m-cli-cloud.ps1
+```
+
 不要为此在轻量服务器防火墙开放 8080。域名、HTTPS、多用户 token 和租户沙箱调度完成前，不开放公网 API。

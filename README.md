@@ -156,6 +156,14 @@ java -jar target/m-cli-1.0-SNAPSHOT.jar serve --http --port 8080
 
 服务监听 `127.0.0.1:8080`，请求需携带 `Authorization: Bearer <PAICLI_RUNTIME_API_KEY>`。
 
+仓库管理员在 Windows 上可直接运行云端预发布客户端。脚本会自动建立 SSH 隧道，按 UTF-8 提交中文，只展示 Agent 最终回答，并在退出时关闭隧道：
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\deploy\client\m-cli-cloud.ps1
+```
+
+输入 `exit` 或 `/exit` 退出。这个脚本用于单用户预发布验收；多用户产品客户端将使用用户 Token，不读取服务器管理配置。
+
 `GET /healthz` 用于本机服务健康检查，不需要认证；业务端点仍需 API Key。该接口不代表当前 Runtime API 已具备多租户公网服务能力。
 
 | 接口 | 用途 |

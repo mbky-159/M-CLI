@@ -1005,6 +1005,9 @@ public class Main {
         ToolRegistry registry = new ToolRegistry();
         registry.setProjectPath(Path.of(".").toAbsolutePath().normalize().toString());
         Agent agent = new Agent(llmClient, registry);
+        // Headless callers need the final answer as data. The interactive renderer has
+        // already printed streamed content, but Runtime API / task workers have not.
+        agent.setReturnFinalResponseWhenStreamed(true);
         try {
             agent.setConversationLedger(ConversationLedger.openDefault(
                     Path.of(System.getProperty("user.home"))));
