@@ -283,7 +283,9 @@ public class Agent {
 
                 if (streamRenderer.hasStreamedOutput()) {
                     streamRenderer.finish();
-                    return returnFinalResponseWhenStreamed ? (response.content() == null ? "" : response.content().trim()) : "";
+                    return returnFinalResponseWhenStreamed
+                            ? finalResponseContent(response.content(), streamRenderer.streamedContent())
+                            : "";
                 }
                 streamRenderer.clearThinkingPanel();
                 return formatUserFacingResponse(reasoningTranscript.toString(), response.content());
@@ -325,7 +327,7 @@ public class Agent {
             budget.recordTokens(response.inputTokens(), response.outputTokens(), response.cachedInputTokens());
             appendReasoning(reasoningTranscript, response.reasoningContent());
 
-            String responseContent = response.content() == null ? "" : response.content().trim();
+            String responseContent = finalResponseContent(response.content(), streamRenderer.streamedContent());
             String partialResult = formatPartialResult(description, responseContent);
             conversationHistory.add(LlmClient.Message.assistant(partialResult));
             conversationLedger.appendMessage(
@@ -356,6 +358,11 @@ public class Agent {
     private String formatPartialResult(String description, String content) {
         String heading = "⚠️ 部分完成（" + description + "）";
         return content == null || content.isBlank() ? heading : heading + "\n\n" + content;
+    }
+
+    private String finalResponseContent(String responseContent, String streamedContent) {
+        String response = responseContent == null ? "" : responseContent.trim();
+        return response.isEmpty() && streamedContent != null ? streamedContent.trim() : response;
     }
 
     /**
@@ -976,6 +983,7 @@ public class Agent {
         private final StringBuilder pendingReasoning = new StringBuilder();
         private final StringBuilder visibleReasoning = new StringBuilder();
         private final StringBuilder lateReasoning = new StringBuilder();
+        private final StringBuilder streamedContent = new StringBuilder();
         private TerminalMarkdownRenderer reasoningRenderer;
         private TerminalMarkdownRenderer contentRenderer;
         private boolean reasoningHeadingPrinted;
@@ -1097,6 +1105,7 @@ public class Agent {
                 contentStarted = true;
                 streamedOutput = true;
             }
+            streamedContent.append(delta);
             contentRenderer.append(delta);
             if (renderer != null) {
                 renderer.appendAssistantContentDelta(delta);
@@ -1106,6 +1115,10 @@ public class Agent {
 
         private boolean hasStreamedOutput() {
             return streamedOutput;
+        }
+
+        private String streamedContent() {
+            return streamedContent.toString();
         }
 
         private void resetBetweenIterations() {
@@ -1125,6 +1138,7 @@ public class Agent {
             if (renderer != null) {
                 renderer.finishAssistantContent();
             }
+            streamedContent.setLength(0);
             String late = lateReasoning.toString().trim();
             if (rendersReasoning() && !late.isEmpty()) {
                 out().println();

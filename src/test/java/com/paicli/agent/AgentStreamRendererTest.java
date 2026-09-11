@@ -5,6 +5,7 @@ import com.paicli.hitl.ApprovalRequest;
 import com.paicli.hitl.ApprovalResult;
 import com.paicli.render.Renderer;
 import com.paicli.render.StatusInfo;
+import com.paicli.tool.ToolRegistry;
 import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayOutputStream;
@@ -15,9 +16,18 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class AgentStreamRendererTest {
+
+    @Test
+    void headlessModeReturnsContentDeliveredOnlyAsStreamDeltas() {
+        Agent agent = new Agent(new StreamingOnlyClient(), new ToolRegistry());
+        agent.setReturnFinalResponseWhenStreamed(true);
+
+        assertEquals("云端回答", agent.run("你好"));
+    }
 
     @Test
     void shouldNotPrintEmptyReasoningHeadingBeforeTextIsFlushable() throws Exception {
@@ -203,6 +213,35 @@ class AgentStreamRendererTest {
 
         private String thinking() {
             return thinking.toString();
+        }
+    }
+
+    private static final class StreamingOnlyClient implements LlmClient {
+        @Override
+        public ChatResponse chat(List<Message> messages, List<Tool> tools) {
+            return new ChatResponse("assistant", "云端回答", null, 10, 2);
+        }
+
+        @Override
+        public ChatResponse chat(List<Message> messages, List<Tool> tools, StreamListener listener) {
+            listener.onContentDelta("云端");
+            listener.onContentDelta("回答");
+            return new ChatResponse("assistant", "", null, 10, 2);
+        }
+
+        @Override
+        public String getModelName() {
+            return "test";
+        }
+
+        @Override
+        public String getProviderName() {
+            return "test";
+        }
+
+        @Override
+        public boolean supportsTools() {
+            return false;
         }
     }
 }
