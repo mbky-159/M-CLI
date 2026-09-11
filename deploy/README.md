@@ -93,4 +93,11 @@ Windows 管理员可用仓库内的交互客户端一次完成隧道、UTF-8 请
 powershell -ExecutionPolicy Bypass -File .\deploy\client\m-cli-cloud.ps1
 ```
 
+也可以安装全局 `mcli` 命令：
+
+```powershell
+irm https://raw.githubusercontent.com/mbky-159/M-CLI/master/install.ps1 | iex
+mcli
+```
+
 不要为此在轻量服务器防火墙开放 8080。域名、HTTPS、多用户 token 和租户沙箱调度完成前，不开放公网 API。

@@ -3,7 +3,9 @@ param(
     [string]$ServerAddress = "47.84.77.65",
     [string]$SshUser = "root",
     [string]$IdentityFile = "$HOME\Desktop\m-cli-admin.pem",
-    [int]$LocalPort = 18080
+    [int]$LocalPort = 18080,
+    [Alias("h")][switch]$Help,
+    [Alias("v")][switch]$Version
 )
 
 $ErrorActionPreference = "Stop"
@@ -11,6 +13,25 @@ Add-Type -AssemblyName System.Net.Http
 [Console]::InputEncoding = [System.Text.UTF8Encoding]::new($false)
 [Console]::OutputEncoding = [System.Text.UTF8Encoding]::new($false)
 $OutputEncoding = [System.Text.UTF8Encoding]::new($false)
+
+if ($Version) {
+    Write-Output "M-CLI Cloud 0.1.0-staging"
+    exit 0
+}
+if ($Help) {
+    Write-Output @"
+M-CLI Cloud
+
+用法：
+  mcli                 连接云端 M-CLI
+  mcli --help          显示帮助
+  mcli --version       显示版本
+
+当前是管理员预发布客户端，连接参数可通过 -ServerAddress、-SshUser、
+-IdentityFile 和 -LocalPort 覆盖。
+"@
+    exit 0
+}
 
 if (-not (Test-Path -LiteralPath $IdentityFile)) {
     throw "找不到 SSH 私钥：$IdentityFile"

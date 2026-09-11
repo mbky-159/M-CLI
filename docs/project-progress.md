@@ -4,13 +4,13 @@
 
 ## 当前状态
 
-- 云端 CLI 基础环境已完成运行验收：新加坡轻量服务器已初始化，单用户 Runtime API 由 systemd 托管并保持 loopback-only，Docker/gVisor 沙箱动态探针通过；Windows 预发布客户端可自动建立 SSH 隧道、按 UTF-8 提交中文并渲染最终回答。可选 MySQL/Redis 保留配置但未启动。GitHub Actions 工作流已准备，仓库 Secrets 与部署开关仍待配置；用户鉴权、持久租户沙箱和云端调度尚未完成。见 [设计与实施顺序](cloud-cli-design.md)。
+- 云端 CLI 基础环境已完成运行验收：新加坡轻量服务器已初始化，单用户 Runtime API 由 systemd 托管并保持 loopback-only，Docker/gVisor 沙箱动态探针通过；Windows 预发布客户端支持一键安装为全局 `mcli` 命令，自动建立 SSH 隧道、按 UTF-8 提交中文并渲染最终回答。可选 MySQL/Redis 保留配置但未启动。GitHub Actions 工作流已准备，仓库 Secrets 与部署开关仍待配置；用户鉴权、持久租户沙箱和云端调度尚未完成。见 [设计与实施顺序](cloud-cli-design.md)。
 
 - 已推进至第 23 期微信 iLink 文本通道 MVP；各模块完成度和后续边界见下文。
 - 2026-09-10：产品由 PaiCLI 更名为 M-CLI，更新启动标识、提示词、文档和 JAR 名称，保留原有配置兼容性。
 - 代码已上传至 GitHub：`mbky-159/M-CLI`。
 - 改名验证：打包成功；快速回归 864 项，855 项通过，9 项失败在改名前代码中同样复现，详见项目导读。
-- 云端部署尚未完成。
+- 单用户云端预发布已部署；多用户公网入口与租户沙箱调度尚未完成。
 - 未交付：容器/VM 沙箱、MCP OAuth、sampling、server 自动重启。
 
 ## 演进历程

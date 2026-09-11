@@ -4,6 +4,22 @@ M-CLI 是一个 Java 编写的 AI 编程命令行工具，可以在当前项目�
 
 ## 快速开始
 
+### Windows 一键安装云端预发布客户端
+
+在 PowerShell 中执行：
+
+```powershell
+irm https://raw.githubusercontent.com/mbky-159/M-CLI/master/install.ps1 | iex
+```
+
+重新打开 PowerShell 后，直接运行：
+
+```powershell
+mcli
+```
+
+`mcli --help` 查看参数，`mcli --version` 查看版本。当前安装的是管理员预发布客户端，仍通过后台 SSH 隧道连接；正式多用户版切换为 HTTPS + Token 后会沿用同一个 `mcli` 命令。
+
 准备 Java 17+、Maven，以及至少一个模型服务的 API Key。
 
 ```sh
